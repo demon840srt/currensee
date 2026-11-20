@@ -25,3 +25,21 @@ func roundTrip<T: Codable & Equatable>(_ value: T) throws -> T {
 func dec(_ string: String) -> Decimal {
     Decimal(string: string, locale: Locale(identifier: "en_US_POSIX"))!
 }
+
+enum Fixture {
+    static func data(_ name: String) throws -> Data {
+        guard let url = Bundle.module.url(forResource: name, withExtension: "json", subdirectory: "Fixtures") else {
+            throw RateError.invalidResponse("missing fixture \(name)")
+        }
+        return try Data(contentsOf: url)
+    }
+}
+
+/// Midnight UTC of the given calendar day.
+func utcDay(_ y: Int, _ m: Int, _ d: Int, hour: Int = 0) -> Date {
+    var c = DateComponents()
+    (c.year, c.month, c.day, c.hour) = (y, m, d, hour)
+    var cal = Calendar(identifier: .gregorian)
+    cal.timeZone = TimeZone(identifier: "UTC")!
+    return cal.date(from: c)!
+}

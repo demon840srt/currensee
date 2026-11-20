@@ -52,14 +52,14 @@ Each phase: plan → approval → tests first → code → `./scripts/test.sh` g
 > for 7d/30d, change %, sparkline points, 35-day pruning). All tests use fixtures — no network.
 
 **Checklist:**
-- [ ] Inversion math correct: base ILS, USD rate shown as ILS per 1 USD (fixture test)
-- [ ] Validator rejects: zero, negative, non-finite, >1 MB body, non-allowlisted host, >50% jump (held)
-- [ ] Primary fails twice → fallback used for fiat; crypto keeps cache; primary recovers → switch back
-- [ ] Backoff grows to max 15 min and resets on success
-- [ ] Stale after 3× refresh interval; "no data" state distinct from "stale"
-- [ ] Change % and sparkline correct for 24h/7d/30d; "collecting" when insufficient
-- [ ] Cache is loaded on launch before the first fetch
-- [ ] `./scripts/test.sh` green
+- [x] Inversion math correct: base ILS, USD rate shown as ILS per 1 USD (fixture test)
+- [x] Validator rejects: zero, negative, non-finite, >1 MB body, non-allowlisted host, >50% jump (held)
+- [x] Primary fails twice → fallback used for fiat; crypto keeps cache; primary recovers → switch back
+- [x] Backoff grows to max 15 min and resets on success
+- [x] Stale after 3× refresh interval; "no data" state distinct from "stale"
+- [x] Change % and sparkline correct for 24h/7d/30d; "collecting" when insufficient
+- [x] Cache is loaded on launch before the first fetch
+- [x] `./scripts/test.sh` green
 
 ## Phase 4 — Floating window, placement, lock
 **Prompt:**

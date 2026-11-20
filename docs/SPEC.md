@@ -71,7 +71,7 @@ pause effects on battery on. Decimals: 4 for fiat, 2 for JPY, 5 for crypto (ADR-
   - 24h: local snapshots recorded at every refresh (downsampled to 15-minute buckets).
   - 7d / 30d: daily series. Fiat comes from the Frankfurter time series; crypto from the Coinbase historic spot price (`/v2/prices/<CODE>-<BASE>/spot?date=`). Cached and refreshed once a day.
   - Until enough data exists, the sparkline shows "collecting…" and change % is hidden.
-  - History is pruned to 35 days.
+  - History is pruned to 35 days. Intraday snapshots are kept 48 h; the 24h series is seeded from the latest daily value until snapshots cover it (ADR-0014).
 
 ### 5.6 Settings (menu bar icon + right-click on the pill)
 - F22. A menu bar icon menu offers: Show/Hide pill, Lock/Unlock position, Refresh now, Settings…, Quit. Right-clicking the pill shows the same menu.
@@ -156,3 +156,5 @@ None — every feature is core (owner decision, 2026-11-20).
 | 14 | 2026-11-20 | Base currency is never in the watch list; base change removes it | 0010 |
 | 15 | 2026-11-20 | Mocks in a `CurrencyCoreTestSupport` target, never linked into the app | 0011 |
 | 16 | 2026-11-20 | Versioned persistence envelopes; decimals stored as strings | 0012 |
+| 17 | 2026-11-20 | Frankfurter v2 flat-array shape recorded; fallback drops crypto | 0013 |
+| 18 | 2026-11-20 | Intraday history 48 h, daily 35 d; 24h series seeded from yesterday's daily value | 0014 |

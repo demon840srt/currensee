@@ -17,7 +17,8 @@ let package = Package(
         .target(name: "CurrencyCoreTestSupport", dependencies: ["CurrencyCore"]),
         .testTarget(
             name: "CurrencyCoreTests",
-            dependencies: ["CurrencyCore", "CurrencyCoreTestSupport"]
+            dependencies: ["CurrencyCore", "CurrencyCoreTestSupport"],
+            resources: [.copy("Fixtures")]
         )
     ],
     swiftLanguageModes: [.v6]
