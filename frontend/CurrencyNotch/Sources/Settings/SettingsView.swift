@@ -11,7 +11,7 @@ struct SettingsView: View {
                 .tabItem { Label("Currencies", systemImage: "dollarsign.circle") }
             DisplayTab(model: model)
                 .tabItem { Label("Display", systemImage: "paintpalette") }
-            AlertsTab()
+            AlertsTab(model: model)
                 .tabItem { Label("Alerts", systemImage: "bell") }
             GeneralTab(model: model)
                 .tabItem { Label("General", systemImage: "gearshape") }
@@ -126,7 +126,7 @@ private struct BasePicker: View {
 }
 
 /// Icon + code + localized name. Codes stay LTR inside RTL text.
-private struct CurrencyLabel: View {
+struct CurrencyLabel: View {
     let model: AppModel
     let code: String
 
@@ -216,16 +216,6 @@ enum ThemeNames {
 }
 
 // MARK: - Alerts
-
-private struct AlertsTab: View {
-    var body: some View {
-        ContentUnavailableView {
-            Label("Rate alerts", systemImage: "bell.badge")
-        } description: {
-            Text("Rate alerts arrive in a later update.")
-        }
-    }
-}
 
 // MARK: - General
 

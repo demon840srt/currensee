@@ -17,6 +17,8 @@ final class AppModel {
     private(set) var lastError: String?
     /// System conditions that pause theme effects (SPEC F26).
     private(set) var effectsEnvironment: EffectsEnvironment
+    private(set) var alerts: [RateAlert]
+    private(set) var notificationStatus: NotificationStatus = .notDetermined
     let catalog = CurrencyCatalog.bundled
 
     // Window layout, set by `PillPanelController` so the SwiftUI content lines up with the panel.
@@ -31,6 +33,9 @@ final class AppModel {
     @ObservationIgnored let store: SettingsStore
     @ObservationIgnored private var editor: PreferencesEditor
     @ObservationIgnored private let loginItems: any LoginItemService
+    @ObservationIgnored private let notifier: any AlertNotifying
+    /// Only quotes fetched after this moment can trigger alerts (not the launch cache) — moves forward each evaluation.
+    @ObservationIgnored private var alertsFreshSince = Date()
     @ObservationIgnored private let rateService: RateService
     @ObservationIgnored private let history: HistoryStore
     @ObservationIgnored private let rotation: RotationEngine
@@ -44,13 +49,16 @@ final class AppModel {
     @ObservationIgnored private let debugIgnoreBattery: Bool
     @ObservationIgnored private var tasks: [Task<Void, Never>] = []
 
-    init(store: SettingsStore = SettingsStore(), loginItems: any LoginItemService = MainAppLoginItem()) {
+    init(store: SettingsStore = SettingsStore(), loginItems: any LoginItemService = MainAppLoginItem(),
+         notifier: (any AlertNotifying)? = nil) {
         self.store = store
         self.loginItems = loginItems
+        self.notifier = notifier ?? Notifier()
         let editor = PreferencesEditor(store: store)
         self.editor = editor
         settings = editor.settings
         watchList = editor.watchList
+        alerts = editor.alerts
         loginItemState = LoginItemState(status: loginItems.status)
         effectsEnvironment = effectsMonitor.environment
         #if DEBUG
@@ -84,6 +92,7 @@ final class AppModel {
             for await snapshot in service.snapshots {
                 self?.snapshot = snapshot
                 if self?.mode != .collapsed { self?.refreshSummaries() }
+                self?.evaluateAlerts()
             }
         })
         tasks.append(Task { [weak self] in
@@ -116,6 +125,41 @@ final class AppModel {
         }
         effectsMonitor.onChange = { [weak self] environment in self?.effectsEnvironment = environment }
         effectsMonitor.start()
+        reloadNotificationStatus()
+    }
+
+    // MARK: - Alerts (SPEC F28–F29)
+
+    /// After each refresh: fire alerts that crossed, persist arm states, one notification per crossing.
+    private func evaluateAlerts() {
+        guard !editor.alerts.isEmpty else { return }
+        let now = Date()
+        let result = AlertEvaluator.evaluate(alerts: editor.alerts, quotes: snapshot.quotes, watchList: watchList,
+                                             freshSince: alertsFreshSince, now: now)
+        alertsFreshSince = now
+        editor.saveEvaluatedAlerts(result.alerts)
+        alerts = editor.alerts
+        for alert in result.fired {
+            notifier.post(title: String(localized: "Currency Notch"), body: notificationBody(for: alert),
+                          identifier: "\(alert.id.uuidString)-\(Int(now.timeIntervalSince1970))")
+        }
+    }
+
+    func notificationBody(for alert: RateAlert) -> String {
+        let message = AlertMessage.make(for: alert, formatter: formatter)
+        switch message.direction {
+        case .above: return String(localized: "\(message.code) rose above \(message.threshold)")
+        case .below: return String(localized: "\(message.code) fell below \(message.threshold)")
+        }
+    }
+
+    func activity(of alert: RateAlert) -> AlertActivity {
+        AlertEvaluator.activity(of: alert, watchList: watchList)
+    }
+
+    func reloadNotificationStatus() {
+        let notifier = notifier
+        Task { [weak self] in self?.notificationStatus = await notifier.status() }
     }
 
     // MARK: - Themes (SPEC §5.7)
@@ -154,6 +198,7 @@ final class AppModel {
         lastError = nil
         settings = editor.settings
         watchList = editor.watchList
+        alerts = editor.alerts
         react(to: effects)
         return true
     }
@@ -176,6 +221,11 @@ final class AppModel {
         if effects.contains(.summaries) { refreshSummaries() }
         if effects.contains(.loginItem) { updateLoginItem(settings.launchAtLogin) }
         if effects.contains(.pillVisibility) { onPillHiddenChange?(settings.isPillHidden) }
+        if effects.contains(.alertCreated) {
+            // SPEC F29: permission is requested on the first alert created (macOS only prompts once).
+            let notifier = notifier
+            Task { [weak self] in self?.notificationStatus = await notifier.requestAuthorization() }
+        }
     }
 
     var isPositionLocked: Bool { settings.isPositionLocked }

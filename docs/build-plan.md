@@ -133,9 +133,9 @@ Each phase: plan → approval → tests first → code → `./scripts/test.sh` g
 > alert, localized message). Alerts tab: add/edit/delete.
 
 **Checklist:**
-- [ ] Evaluator tests: above/below, exact-threshold, fire once, re-arm, base change
-- [ ] Notification text localized in all 5 languages
-- [ ] Manual: real notification appears once when a test threshold is crossed
+- [x] Evaluator tests: above/below, exact-threshold, fire once, re-arm, base change
+- [x] Notification text localized in all 5 languages
+- [x] Manual: real notification appears once when a test threshold is crossed
 
 ## Phase 10 — Localization (he RTL, en, es, ru, zh-Hans)
 **Prompt:**

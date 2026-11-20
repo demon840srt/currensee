@@ -165,3 +165,4 @@ None — every feature is core (owner decision, 2026-11-20).
 | 23 | 2026-11-20 | PreferencesEditor + AppKit settings window; login item auto-registers once on first Release launch; Show/Hide persists | 0018 |
 | 24 | 2026-11-20 | All motion in Core Animation (split-flap, particles, shimmer); theme colors adjusted to pass 4.5:1, tested | 0019 |
 | 25 | 2026-11-21 | Particles via core simulation + 12 fps display link instead of CAEmitterLayer (WindowServer cost) | 0020 |
+| 26 | 2026-11-21 | Alerts: strict crossing, fresh data only, start disarmed if already past, inactive (kept) on base/list change | 0021 |
