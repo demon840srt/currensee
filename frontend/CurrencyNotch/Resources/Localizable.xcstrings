@@ -1,0 +1,16 @@
+{
+  "sourceLanguage" : "he",
+  "strings" : {
+    "Currency Notch" : {
+      "shouldTranslate" : false
+    },
+    "Quit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "he" : { "stringUnit" : { "state" : "translated", "value" : "יציאה" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Quit" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

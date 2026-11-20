@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Shared paths for the project scripts. Sourced, not executed.
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CORE_DIR="$ROOT_DIR/backend/CurrencyCore"
+APP_DIR="$ROOT_DIR/frontend/CurrencyNotch"
+PROJECT="$APP_DIR/CurrencyNotch.xcodeproj"
+SCHEME="CurrencyNotch"
+BUILD_DIR="$ROOT_DIR/build"
+MIN_XCODE_MAJOR=26
+
+log() { printf '\033[1m==> %s\033[0m\n' "$*"; }
+die() { printf '\033[31merror:\033[0m %s\n' "$*" >&2; exit 1; }
+
+# Regenerate the Xcode project if it is missing or older than project.yml.
+ensure_project() {
+    if [[ ! -d "$PROJECT" || "$APP_DIR/project.yml" -nt "$PROJECT/project.pbxproj" ]]; then
+        "$ROOT_DIR/scripts/bootstrap.sh"
+    fi
+}
