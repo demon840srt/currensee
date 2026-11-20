@@ -39,13 +39,13 @@ private struct DropdownRow: View {
     var body: some View {
         HStack(spacing: 8) {
             CurrencyIconView(icon: row.icon, size: 18)
-            Text(verbatim: row.code)
+            Text(verbatim: row.code.ltrIsolated)
                 .frame(width: 42, alignment: .leading)
             Spacer(minLength: 4)
-            Text(verbatim: "\(row.valueText) \(row.symbol)")
+            Text(verbatim: "\(row.valueText) \(row.symbol)".ltrIsolated)
             Group {
                 if let change = row.change.text {
-                    Text(verbatim: "\(row.change.arrow)\(change)").foregroundStyle(theme.changeColor(row.change.direction))
+                    Text(verbatim: "\(row.change.arrow)\(change)".ltrIsolated).foregroundStyle(theme.changeColor(row.change.direction))
                 } else {
                     Text(verbatim: "—").foregroundStyle(Color(theme.secondaryText))
                 }

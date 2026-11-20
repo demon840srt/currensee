@@ -66,6 +66,24 @@ public struct RateFormatter: Sendable {
 }
 
 extension AppLanguage {
+    /// The app's `.lproj` folder name; nil for `.system`.
+    public var localizationName: String? {
+        switch self {
+        case .system: nil
+        case .he: "he"
+        case .en: "en"
+        case .es: "es"
+        case .ru: "ru"
+        case .zhHans: "zh-Hans"
+        }
+    }
+
+    /// Value for the app's `AppleLanguages` preference (per-app language, applied at launch — ADR-0022);
+    /// nil removes the override so the app follows macOS.
+    public var appleLanguages: [String]? {
+        localizationName.map { [$0] }
+    }
+
     /// Locale used for number formatting. `.system` follows the user's macOS settings.
     public var formattingLocale: Locale {
         switch self {

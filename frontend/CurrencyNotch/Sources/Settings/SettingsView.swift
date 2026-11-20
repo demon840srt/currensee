@@ -133,7 +133,7 @@ struct CurrencyLabel: View {
     var body: some View {
         HStack(spacing: 8) {
             CurrencyIconView(icon: model.rowBuilder.icon(for: code), size: 18)
-            Text(verbatim: code).font(.body.monospaced()).environment(\.layoutDirection, .leftToRight)
+            Text(verbatim: code.ltrIsolated).font(.body.monospaced())
             Text(verbatim: model.localizedName(for: code)).foregroundStyle(.secondary).lineLimit(1)
         }
     }
@@ -199,7 +199,6 @@ private struct ThemePreview: View {
         }
         .environment(\.pillTheme, theme)
         .environment(\.pillEffectsRunning, model.effectsRunning(for: theme))
-        .environment(\.layoutDirection, .leftToRight)
     }
 }
 
@@ -233,6 +232,13 @@ private struct GeneralTab: View {
                 Text(verbatim: "Español").tag(AppLanguage.es)
                 Text(verbatim: "Русский").tag(AppLanguage.ru)
                 Text(verbatim: "简体中文").tag(AppLanguage.zhHans)
+            }
+            if model.needsRestartForLanguage {
+                HStack {
+                    Text("Restart Currency Notch to switch language.").font(.callout)
+                    Spacer()
+                    Button("Restart Now") { LanguageOverride.relaunch() }
+                }
             }
             Section {
                 Toggle("Launch at login", isOn: Binding(get: { model.loginItemState.isOn },

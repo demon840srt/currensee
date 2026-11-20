@@ -12,8 +12,8 @@ struct ExpandedPillView: View {
                 CurrencyIconView(icon: row.icon, size: 26)
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 5) {
-                        Text(verbatim: row.code)
-                        Text(verbatim: "\(row.valueText) \(row.symbol)")
+                        Text(verbatim: row.code.ltrIsolated)
+                        Text(verbatim: "\(row.valueText) \(row.symbol)".ltrIsolated)
                         StaleDot(isStale: model.isStale)
                     }
                     .font(PillFont.swiftUI)
@@ -38,7 +38,7 @@ struct ExpandedPillView: View {
         if let freshness = model.freshnessText {
             Text(freshness).foregroundStyle(Color(theme.warning))
         } else if let change = row.change.text {
-            Text(verbatim: "\(row.change.arrow) \(change)").foregroundStyle(theme.changeColor(row.change.direction))
+            Text(verbatim: "\(row.change.arrow) \(change)".ltrIsolated).foregroundStyle(theme.changeColor(row.change.direction))
         } else {
             Text("Collecting…").foregroundStyle(Color(theme.secondaryText))
         }

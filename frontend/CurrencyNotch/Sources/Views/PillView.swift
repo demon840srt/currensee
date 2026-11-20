@@ -20,8 +20,7 @@ struct PillRootView: View {
         .animation(.spring(duration: 0.35, bounce: 0.15), value: model.mode)
         .environment(\.pillTheme, theme)
         .environment(\.pillEffectsRunning, model.effectsRunning(for: theme))
-        // Codes and numbers read left-to-right even in Hebrew (SPEC F31); full RTL work is Phase 10.
-        .environment(\.layoutDirection, .leftToRight)
+        // Layout mirrors in RTL (SPEC F31); codes and numbers are isolated LTR where they're drawn.
     }
 
     private var listTransition: AnyTransition {
@@ -65,12 +64,16 @@ struct CollapsedBoardView: View {
         let shadow = theme.textShadow.map { Color($0) }
         HStack(spacing: 5) {
             if let rate = model.collapsed {
+                // RTL mirrors the container: [•] [3.3429 ₪] [USD]; each piece still reads left-to-right.
                 SplitFlapBoard(text: rate.code, alignment: .leading, minimumLength: widths.code,
                                cellWidth: PillFont.letterCell, color: textColor, shadow: shadow)
-                SplitFlapBoard(text: rate.value, alignment: .trailing, minimumLength: widths.value,
-                               cellWidth: PillFont.digitCell, color: textColor, shadow: shadow)
-                SplitFlapBoard(text: rate.symbol, minimumLength: widths.symbol, cellWidth: PillFont.symbolCell,
-                               color: textColor, shadow: shadow)
+                HStack(spacing: 5) {
+                    SplitFlapBoard(text: rate.value, alignment: .trailing, minimumLength: widths.value,
+                                   cellWidth: PillFont.digitCell, color: textColor, shadow: shadow)
+                    SplitFlapBoard(text: rate.symbol, minimumLength: widths.symbol, cellWidth: PillFont.symbolCell,
+                                   color: textColor, shadow: shadow)
+                }
+                .environment(\.layoutDirection, .leftToRight)
             } else {
                 Text(verbatim: RateFormatter.missingValue).foregroundStyle(textColor)
             }

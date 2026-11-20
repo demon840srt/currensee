@@ -143,9 +143,9 @@ Each phase: plan → approval → tests first → code → `./scripts/test.sh` g
 > verify RTL mirroring (leading/trailing everywhere), LTR isolation for numbers and codes.
 
 **Checklist:**
-- [ ] Test: no missing keys in any language
-- [ ] Test: number formatting per locale
-- [ ] Manual: Hebrew pill, hover, dropdown and settings mirror correctly; no truncation in ru/es
+- [x] Test: no missing keys in any language
+- [x] Test: number formatting per locale
+- [x] Manual: Hebrew pill, hover, dropdown and settings mirror correctly; no truncation in ru/es
 
 ## Phase 11 — Hardening, signing, notarization, release
 **Prompt:**

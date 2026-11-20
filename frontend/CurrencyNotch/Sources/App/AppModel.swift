@@ -19,6 +19,8 @@ final class AppModel {
     private(set) var effectsEnvironment: EffectsEnvironment
     private(set) var alerts: [RateAlert]
     private(set) var notificationStatus: NotificationStatus = .notDetermined
+    /// Language the app was launched in; changing the setting needs a restart (ADR-0022).
+    let launchLanguage: AppLanguage
     let catalog = CurrencyCatalog.bundled
 
     // Window layout, set by `PillPanelController` so the SwiftUI content lines up with the panel.
@@ -59,6 +61,7 @@ final class AppModel {
         settings = editor.settings
         watchList = editor.watchList
         alerts = editor.alerts
+        launchLanguage = editor.settings.language
         loginItemState = LoginItemState(status: loginItems.status)
         effectsEnvironment = effectsMonitor.environment
         #if DEBUG
@@ -147,9 +150,10 @@ final class AppModel {
 
     func notificationBody(for alert: RateAlert) -> String {
         let message = AlertMessage.make(for: alert, formatter: formatter)
+        let code = message.code.ltrIsolated, threshold = message.threshold.ltrIsolated
         switch message.direction {
-        case .above: return String(localized: "\(message.code) rose above \(message.threshold)")
-        case .below: return String(localized: "\(message.code) fell below \(message.threshold)")
+        case .above: return String(localized: "\(code) rose above \(threshold)")
+        case .below: return String(localized: "\(code) fell below \(threshold)")
         }
     }
 
@@ -221,6 +225,7 @@ final class AppModel {
         if effects.contains(.summaries) { refreshSummaries() }
         if effects.contains(.loginItem) { updateLoginItem(settings.launchAtLogin) }
         if effects.contains(.pillVisibility) { onPillHiddenChange?(settings.isPillHidden) }
+        if effects.contains(.formatting) { LanguageOverride.apply(settings.language) }
         if effects.contains(.alertCreated) {
             // SPEC F29: permission is requested on the first alert created (macOS only prompts once).
             let notifier = notifier
@@ -229,6 +234,8 @@ final class AppModel {
     }
 
     var isPositionLocked: Bool { settings.isPositionLocked }
+
+    var needsRestartForLanguage: Bool { settings.language != launchLanguage }
 
     // MARK: - Launch at login (SPEC F32)
 

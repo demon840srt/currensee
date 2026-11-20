@@ -68,12 +68,11 @@ private struct AlertRow: View {
             CurrencyIconView(icon: model.rowBuilder.icon(for: alert.quoteCode), size: 18)
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
-                    Text(verbatim: alert.quoteCode).font(.body.monospaced())
+                    Text(verbatim: alert.quoteCode.ltrIsolated).font(.body.monospaced())
                     Text(alert.direction == .above ? "▲ above" : "▼ below")
-                    Text(verbatim: AlertMessage.make(for: alert, formatter: model.formatter).threshold)
+                    Text(verbatim: AlertMessage.make(for: alert, formatter: model.formatter).threshold.ltrIsolated)
                         .monospacedDigit()
                 }
-                .environment(\.layoutDirection, .leftToRight)
                 status.font(.caption)
             }
             Spacer()
@@ -148,7 +147,7 @@ private struct AlertEditor: View {
             Form {
                 Picker("Currency", selection: $draft.quoteCode) {
                     ForEach(model.watchList.orderedCodes, id: \.self) { code in
-                        Text(verbatim: "\(code) — \(model.localizedName(for: code))").tag(code)
+                        Text(verbatim: "\(code.ltrIsolated) — \(model.localizedName(for: code))").tag(code)
                     }
                 }
                 Picker("Notify when the rate is", selection: $draft.direction) {
@@ -170,9 +169,8 @@ private struct AlertEditor: View {
                 }
                 if let current {
                     LabeledContent {
-                        Text(verbatim: "\(model.formatter.number(current, quoteCode: draft.quoteCode)) \(model.formatter.symbol(for: model.watchList.baseCode))")
+                        Text(verbatim: "\(model.formatter.number(current, quoteCode: draft.quoteCode)) \(model.formatter.symbol(for: model.watchList.baseCode))".ltrIsolated)
                             .monospacedDigit()
-                            .environment(\.layoutDirection, .leftToRight)
                     } label: {
                         Text("Current rate")
                     }

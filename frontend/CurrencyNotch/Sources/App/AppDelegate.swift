@@ -1,4 +1,5 @@
 import AppKit
+import OSLog
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -10,6 +11,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var wakeObserver: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        #if DEBUG
+        Logger(subsystem: "com.afik.CurrencyNotch", category: "launch").debug(
+            "localization \(Bundle.main.preferredLocalizations.first ?? "?", privacy: .public), layout \(NSApp.userInterfaceLayoutDirection == .rightToLeft ? "RTL" : "LTR", privacy: .public)")
+        #endif
         let model = AppModel()
         let menuController = AppMenuController(model: model)
         let pillController = PillPanelController(model: model, menuController: menuController)
