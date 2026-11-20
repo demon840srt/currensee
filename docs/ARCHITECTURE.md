@@ -68,6 +68,6 @@ No `DispatchQueue` in new code unless AppKit requires it.
 - Manual checklist per phase for visuals (themes, multi-display, Spaces).
 
 ## Distribution
-`release.sh`: `xcodegen` → `xcodebuild archive` (Release, Developer ID, Hardened Runtime) →
-`notarytool submit --keychain-profile "$NOTARY_KEYCHAIN_PROFILE" --wait` → `stapler staple` →
-`hdiutil create` DMG → staple DMG. Identity and team come from env vars only.
+Personal use (ADR-0023): `release.sh` → `xcodegen` → `xcodebuild build` (Release, ad-hoc signed, Hardened Runtime,
+sandbox) → verify with `codesign` → install to `/Applications/CurrencyNotch.app`; `--dmg` also writes a backup DMG
+to `dist/`. No Developer ID, notarization or secrets.

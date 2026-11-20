@@ -8,7 +8,7 @@ A native macOS floating, notch-sized pill that rotates through the user's chosen
 
 ## 2. Users
 - **Owner:** one macOS 26 Tahoe user in Israel (Hebrew UI by default).
-- **Friends:** receive a signed, notarized `.dmg`. No accounts, no server, no shared data.
+- ~~**Friends:** receive a signed, notarized `.dmg`.~~ Personal use only (ADR-0023). No accounts, no server, no shared data.
 
 ## 3. Constraints and exceptions
 | Workshop rule | Status | Note |
@@ -107,19 +107,19 @@ pause effects on battery on. Decimals: 4 for fiat, 2 for JPY, 5 for crypto (ADR-
 - F33. Memory under 80 MB and idle CPU under 2% with particles off (target under 8% with particles on).
 
 ## 6. Definition of done
-- [ ] The pill launches at desktop level, is roughly notch-sized, shows on every Space and display, and can be dragged anywhere.
-- [ ] Position is remembered per display across restarts; lock/unlock prevents accidental dragging.
-- [ ] Rotates through any number of currencies at a configurable interval (default 5 s, 3–30 s) with split-flap animation.
-- [ ] Hover expands to show flag/icon, change % and sparkline for 24h/7d/30d.
-- [ ] Click opens a dropdown of all rates; click again, click away or Esc closes it; drag never triggers click.
-- [ ] Live fiat + crypto rates from key-less HTTPS sources, refreshing every few minutes, with fallback.
-- [ ] Offline/stale state is shown with "last updated" time.
-- [ ] Base currency and watch list (search, add, remove, reorder) editable from the menu bar and right-click.
-- [ ] All 5 themes work; particles on Ice/Fire/Israel; battery pause and Reduce Motion respected.
-- [ ] Rate alerts notify once per crossing and re-arm.
-- [ ] Launch at login works and is toggleable.
-- [ ] UI fully localized: he (RTL, default), en, es, ru, zh-Hans.
-- [ ] `./scripts/test.sh` passes; `./scripts/release.sh` produces a signed, notarized DMG that opens on a second Mac without warnings.
+- [x] The pill launches at desktop level, is roughly notch-sized, shows on every Space and display, and can be dragged anywhere.
+- [x] Position is remembered per display across restarts; lock/unlock prevents accidental dragging.
+- [x] Rotates through any number of currencies at a configurable interval (default 5 s, 3–30 s) with split-flap animation.
+- [x] Hover expands to show flag/icon, change % and sparkline for 24h/7d/30d.
+- [x] Click opens a dropdown of all rates; click again, click away or Esc closes it; drag never triggers click.
+- [x] Live fiat + crypto rates from key-less HTTPS sources, refreshing every few minutes, with fallback.
+- [x] Offline/stale state is shown with "last updated" time.
+- [x] Base currency and watch list (search, add, remove, reorder) editable from the menu bar and right-click.
+- [x] All 5 themes work; particles on Ice/Fire/Israel; battery pause and Reduce Motion respected.
+- [x] Rate alerts notify once per crossing and re-arm.
+- [x] Launch at login works and is toggleable.
+- [x] UI fully localized: he (RTL, default), en, es, ru, zh-Hans.
+- [x] `./scripts/test.sh` passes; `./scripts/release.sh` builds a sandboxed, Hardened Runtime Release app and installs it in /Applications (ADR-0023; was: signed, notarized DMG).
 
 ## 7. Out of scope
 WidgetKit widget · Docker · server or database · Mac App Store · iOS/iPadOS/Windows/Linux ·
@@ -129,8 +129,8 @@ user accounts · converter/trading · paid or keyed APIs · analytics/telemetry 
 - HTTPS only; hosts allowlisted (`api.coinbase.com`, `api.frankfurter.dev`); ATS with no exceptions.
 - Every response is untrusted: strict `Codable` decoding, 1 MB size cap, 10 s timeout. Reject zero, negative, non-finite or absurd values (more than 50% jump from the last good value is held until confirmed by the next refresh).
 - Parsing failures never crash and never overwrite good cached data.
-- No secrets in the repo, `project.yml`, Info.plist or binary. Signing/notary credentials come only from env vars / Keychain profile.
-- App Sandbox with `network.client` only; Hardened Runtime; Developer ID signing; notarized and stapled.
+- No secrets in the repo, `project.yml`, Info.plist or binary (personal-use builds need none — ADR-0023).
+- App Sandbox with `network.client` only; Hardened Runtime; ad-hoc signed for personal use (ADR-0023; was Developer ID + notarization).
 - No telemetry. Release logs contain no response bodies.
 - No third-party packages without an ADR.
 
@@ -167,3 +167,4 @@ None — every feature is core (owner decision, 2026-11-20).
 | 25 | 2026-11-21 | Particles via core simulation + 12 fps display link instead of CAEmitterLayer (WindowServer cost) | 0020 |
 | 26 | 2026-11-21 | Alerts: strict crossing, fresh data only, start disarmed if already past, inactive (kept) on base/list change | 0021 |
 | 27 | 2026-11-21 | Hebrew stays default; language override via per-app AppleLanguages + restart; RTL mirroring with LTR isolates | 0022 |
+| 28 | 2026-11-21 | Personal use only: no Developer ID/notarization; release.sh installs a sandboxed, Hardened Runtime build to /Applications (supersedes #8) | 0023 |

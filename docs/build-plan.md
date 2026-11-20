@@ -147,16 +147,17 @@ Each phase: plan → approval → tests first → code → `./scripts/test.sh` g
 - [x] Test: number formatting per locale
 - [x] Manual: Hebrew pill, hover, dropdown and settings mirror correctly; no truncation in ru/es
 
-## Phase 11 — Hardening, signing, notarization, release
+## Phase 11 — Hardening and personal-use release
+> Scope changed 2026-11-21 (ADR-0023): personal use, no Developer ID or notarization.
+
 **Prompt:**
 > Run a security review against SPEC §8 and fix the findings. Verify entitlements (sandbox +
-> network client only), Hardened Runtime and ATS. Write `scripts/release.sh` (archive → sign with
-> `$DEVELOPER_ID_APPLICATION` → notarize with `$NOTARY_KEYCHAIN_PROFILE` → staple → DMG → staple).
-> Write README install notes for friends. Ask before running the release.
+> network client only), Hardened Runtime and ATS. Write `scripts/release.sh` (Release build → verify →
+> install to /Applications; `--dmg` for a backup). Write README install notes. Ask before running the release.
 
 **Checklist:**
-- [ ] `grep` shows no secrets, no `http://`, no ATS exceptions, no full-response logging in Release
-- [ ] `codesign --verify --deep --strict` and `spctl -a -vv` pass on the built app
-- [ ] Notarization succeeds; DMG stapled
-- [ ] Manual: DMG opens on a second Mac with no Gatekeeper warning
-- [ ] SPEC §6 Definition of Done: every item ticked
+- [x] `grep` shows no secrets, no `http://`, no ATS exceptions, no full-response logging in Release
+- [x] `codesign --verify --deep --strict` passes; entitlements = sandbox + network client; Hardened Runtime on
+- [x] Debug-only switches (theme/battery/effects overrides, pointer and launch logging) absent from the Release binary
+- [x] Manual: installed app in /Applications launches and works
+- [x] SPEC §6 Definition of Done: every item ticked

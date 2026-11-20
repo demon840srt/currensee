@@ -19,7 +19,7 @@ Full spec: `docs/SPEC.md` · Architecture: `docs/ARCHITECTURE.md` · Plan: `docs
 - `./scripts/bootstrap.sh` — check tools (Xcode 26 or newer, xcodegen), generate project
 - `./scripts/test.sh` — `swift test` in backend + `xcodebuild test` for the app
 - `./scripts/build.sh` — Debug build · `./scripts/run.sh` — build + launch with `.env` exported
-- `./scripts/release.sh` — archive, sign, notarize, staple, DMG (asks first; needs env vars)
+- `./scripts/release.sh` — Release build, verify, install to /Applications; `--dmg` for a backup DMG (asks first; ADR-0023)
 
 ## Working rules
 - One phase per session: `/phase N`. Plan first, wait for approval, then implement.
@@ -35,7 +35,7 @@ Full spec: `docs/SPEC.md` · Architecture: `docs/ARCHITECTURE.md` · Plan: `docs
 
 ## Security
 - Never read, print or edit `.env` (blocked in settings). Only `.env.example` holds dummy values.
-- Secrets (signing identity, team ID, notary profile) only in env vars / Keychain — never in code,
+- No secrets are needed (personal use, ADR-0023). If any are ever added: env vars / Keychain only — never in code,
   `project.yml`, Info.plist or the binary.
 - HTTPS only, hosts allowlisted in `RateHostAllowlist`; no ATS exceptions.
 - Decode API responses strictly; cap response size (1 MB); reject zero/negative/non-finite/absurd values.

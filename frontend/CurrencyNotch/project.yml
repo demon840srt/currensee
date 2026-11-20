@@ -47,6 +47,10 @@ targets:
         MARKETING_VERSION: "0.1.0"
         CURRENT_PROJECT_VERSION: "1"
         COMBINE_HIDPI_IMAGES: YES
+      configs:
+        # Release must not carry get-task-allow (debugger attach); Debug keeps it for debugging.
+        Release:
+          CODE_SIGN_INJECT_BASE_ENTITLEMENTS: NO
 
   CurrencyNotchTests:
     type: bundle.unit-test
