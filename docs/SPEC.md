@@ -161,3 +161,4 @@ None — every feature is core (owner decision, 2026-11-20).
 | 19 | 2026-11-20 | Desktop level confirmed on macOS 26; `.fullScreenNone` removed (it hides the window) | 0004 |
 | 20 | 2026-11-20 | One pill with per-display positions + last-used display; global position lock | 0015 |
 | 21 | 2026-11-20 | Display precision rule (≥1000: 2 dp; <1: ≥4 significant digits); full interval after resume | 0016 |
+| 22 | 2026-11-20 | Hover/dropdown state machine, grow-then-shrink resizing, Esc via key-capable panel, monogram crypto icons | 0017 |

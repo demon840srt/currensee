@@ -15,6 +15,10 @@ final class PillContentView: NSView {
     var onDragEnded: () -> Void = {}
     var onClick: () -> Void = {}
     var contextMenu: () -> NSMenu? = { nil }
+    var onPointerEntered: () -> Void = {}
+    var onPointerExited: () -> Void = {}
+    /// The pill's area in this view; outside it (the dropdown list) events go to SwiftUI so the list can scroll.
+    var pillRect: CGRect?
 
     private var gesture: PointerGesture?
     private var didBeginDrag = false
@@ -30,8 +34,13 @@ final class PillContentView: NSView {
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError("not used") }
 
-    // Route every event inside the pill to this view, not the SwiftUI host.
-    override func hitTest(_ point: NSPoint) -> NSView? { frame.contains(point) ? self : nil }
+    // Route events inside the pill to this view (click/drag/menu); the list area goes to SwiftUI.
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        guard frame.contains(point) else { return nil }
+        let local = convert(point, from: superview)
+        if let pillRect, !pillRect.contains(local) { return super.hitTest(point) }
+        return self
+    }
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
     override var mouseDownCanMoveWindow: Bool { false }
 
@@ -42,9 +51,15 @@ final class PillContentView: NSView {
                                        owner: self))
     }
 
-    // Hover expand arrives in Phase 6; for now these only feed the Debug event log (ADR-0004 check).
-    override func mouseEntered(with event: NSEvent) { debugLog("entered") }
-    override func mouseExited(with event: NSEvent) { debugLog("exited") }
+    override func mouseEntered(with event: NSEvent) {
+        debugLog("entered")
+        onPointerEntered()
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        debugLog("exited")
+        onPointerExited()
+    }
 
     private func debugLog(_ message: String) {
         #if DEBUG

@@ -95,10 +95,10 @@ Each phase: plan → approval → tests first → code → `./scripts/test.sh` g
 > click outside or Esc). Rotation pauses during both.
 
 **Checklist:**
-- [ ] View-model tests: change % sign/color, sparkline normalization, empty/collecting states
-- [ ] Dropdown direction logic unit-tested (top vs bottom of screen)
-- [ ] Rotation paused while hovered / dropdown open (tested via engine)
-- [ ] Manual: resize animation smooth; panel frame grows without jumping off-screen
+- [x] View-model tests: change % sign/color, sparkline normalization, empty/collecting states
+- [x] Dropdown direction logic unit-tested (top vs bottom of screen)
+- [x] Rotation paused while hovered / dropdown open (tested via engine)
+- [x] Manual: resize animation smooth; panel frame grows without jumping off-screen
 
 ## Phase 7 — Settings UI
 **Prompt:**

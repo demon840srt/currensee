@@ -1,37 +1,128 @@
 {
-  "sourceLanguage" : "he",
-  "strings" : {
-    "Currency Notch" : {
-      "shouldTranslate" : false
-    },
-    "Lock Position" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "he" : { "stringUnit" : { "state" : "translated", "value" : "נעילת מיקום" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Lock Position" } }
+  "sourceLanguage": "he",
+  "strings": {
+    "Collecting…": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אוסף נתונים…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collecting…"
+          }
+        }
       }
     },
-    "Quit" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "he" : { "stringUnit" : { "state" : "translated", "value" : "יציאה" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Quit" } }
+    "Currency Notch": {
+      "shouldTranslate": false
+    },
+    "Lock Position": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "נעילת מיקום"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lock Position"
+          }
+        }
       }
     },
-    "Rates are out of date" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "he" : { "stringUnit" : { "state" : "translated", "value" : "השערים אינם עדכניים" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Rates are out of date" } }
+    "Offline": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא מקוון"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline"
+          }
+        }
       }
     },
-    "Unlock Position" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "he" : { "stringUnit" : { "state" : "translated", "value" : "ביטול נעילת מיקום" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Unlock Position" } }
+    "Quit": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "יציאה"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit"
+          }
+        }
+      }
+    },
+    "Rates are out of date": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "השערים אינם עדכניים"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rates are out of date"
+          }
+        }
+      }
+    },
+    "Unlock Position": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ביטול נעילת מיקום"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock Position"
+          }
+        }
+      }
+    },
+    "Updated %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עודכן %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %@"
+          }
+        }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }
