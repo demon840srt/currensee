@@ -1,41 +1,38 @@
 import CurrencyCore
 import SwiftUI
 
-/// Collapsed pill content. Phase 4: the first watch-list rate, statically. Phase 5 adds rotation,
-/// split-flap and proper locale formatting.
+/// Collapsed pill: `CODE rate symbol` as a split-flap board, plus the stale dot (SPEC F10).
 struct PillView: View {
     let model: AppModel
 
     var body: some View {
+        let widths = model.boardWidths
         ZStack {
             Capsule().fill(Color.black)
-            HStack(spacing: 6) {
-                if let code = model.displayedCode {
-                    Text(verbatim: code)
-                    Text(verbatim: valueText(for: code))
+            HStack(spacing: 5) {
+                if let rate = model.collapsed {
+                    SplitFlapText(text: rate.code, alignment: .leading, minimumLength: widths.code,
+                                  cellWidth: PillFont.letterCell)
+                    SplitFlapText(text: rate.value, alignment: .trailing, minimumLength: widths.value,
+                                  cellWidth: PillFont.digitCell)
+                    SplitFlapText(text: rate.symbol, minimumLength: widths.symbol, cellWidth: PillFont.symbolCell)
                 } else {
-                    Text(verbatim: "—")
+                    Text(verbatim: RateFormatter.missingValue)
                 }
-                if model.snapshot.status == .stale || model.snapshot.status == .offline {
-                    Circle()
-                        .fill(Color.orange)
-                        .frame(width: 6, height: 6)
-                        .accessibilityLabel(Text("Rates are out of date"))
-                }
+                // Space is always reserved so the board doesn't shift when the dot appears.
+                Circle()
+                    .fill(Color.orange)
+                    .frame(width: 6, height: 6)
+                    .opacity(model.isStale ? 1 : 0)
+                    .accessibilityHidden(!model.isStale)
+                    .accessibilityLabel(Text("Rates are out of date"))
             }
-            .font(.system(size: 13, weight: .semibold, design: .rounded).monospacedDigit())
+            .font(PillFont.swiftUI)
             .foregroundStyle(Color.white)
+            .lineLimit(1)
             // Codes and numbers read left-to-right even in Hebrew (SPEC F31).
             .environment(\.layoutDirection, .leftToRight)
         }
         .frame(width: PillGeometry.collapsedSize.width, height: PillGeometry.collapsedSize.height)
-    }
-
-    private func valueText(for code: String) -> String {
-        guard let quote = model.snapshot.quotes[code] else { return "—" }
-        let decimals = model.catalog.currency(for: code)?.decimals ?? 4
-        let number = quote.value.formatted(.number.precision(.fractionLength(decimals)).grouping(.never))
-        let symbol = model.catalog.currency(for: model.snapshot.baseCode)?.symbol ?? model.snapshot.baseCode
-        return "\(number) \(symbol)"
     }
 }

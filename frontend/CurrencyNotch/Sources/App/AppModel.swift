@@ -7,6 +7,8 @@ import Observation
 @Observable
 final class AppModel {
     private(set) var snapshot: RateSnapshot = .empty()
+    /// Code currently shown in the collapsed pill (driven by `RotationEngine`).
+    private(set) var currentCode: String?
     private(set) var settings: AppSettings
     private(set) var watchList: WatchList
     let catalog = CurrencyCatalog.bundled
@@ -14,13 +16,16 @@ final class AppModel {
     @ObservationIgnored let store: SettingsStore
     @ObservationIgnored private let rateService: RateService
     @ObservationIgnored private let history: HistoryStore
+    @ObservationIgnored private let rotation: RotationEngine
     @ObservationIgnored private let connectivity = NetworkConnectivityMonitor()
     @ObservationIgnored private var tasks: [Task<Void, Never>] = []
 
     init(store: SettingsStore = SettingsStore()) {
         self.store = store
-        settings = store.loadSettings()
-        watchList = store.loadWatchList()
+        let loadedSettings = store.loadSettings()
+        let loadedList = store.loadWatchList()
+        settings = loadedSettings
+        watchList = loadedList
 
         let client = URLSessionHTTPClient()
         let coinbase = CoinbaseProvider(client: client)
@@ -29,6 +34,8 @@ final class AppModel {
         history = HistoryStore(cache: cache)
         rateService = RateService(primary: coinbase, fallback: frankfurter, cache: cache, history: history,
                                   fiatHistory: frankfurter, cryptoHistory: coinbase)
+        rotation = RotationEngine(codes: loadedList.orderedCodes, interval: loadedSettings.rotationInterval)
+        currentCode = loadedList.orderedCodes.first
     }
 
     func start() {
@@ -37,11 +44,18 @@ final class AppModel {
         let settings = settings
         let watchList = watchList
 
+        let rotation = rotation
         tasks.append(Task { [weak self] in
             for await snapshot in service.snapshots {
                 self?.snapshot = snapshot
             }
         })
+        tasks.append(Task { [weak self] in
+            for await code in rotation.currentCodes {
+                self?.currentCode = code
+            }
+        })
+        tasks.append(Task { await rotation.start() })
         tasks.append(Task {
             await history.load()
             await service.configure(baseCode: watchList.baseCode, codes: watchList.orderedCodes,
@@ -73,6 +87,40 @@ final class AppModel {
         store.save(settings)
     }
 
-    /// The currency shown in the collapsed pill. Phase 5 replaces this with the rotation engine.
-    var displayedCode: String? { watchList.orderedCodes.first }
+    // MARK: - Rotation
+
+    /// Hover and the dropdown pause rotation (SPEC F9); wired up in Phase 6.
+    func pauseRotation(_ reason: RotationPauseReason) {
+        let rotation = rotation
+        Task { await rotation.pause(reason) }
+    }
+
+    func resumeRotation(_ reason: RotationPauseReason) {
+        let rotation = rotation
+        Task { await rotation.resume(reason) }
+    }
+
+    // MARK: - Display
+
+    var formatter: RateFormatter {
+        RateFormatter(catalog: catalog, locale: settings.language.formattingLocale)
+    }
+
+    var collapsed: CollapsedRate? {
+        guard let code = currentCode else { return nil }
+        return formatter.collapsed(code: code, quote: snapshot.quotes[code], baseCode: snapshot.baseCode)
+    }
+
+    var isStale: Bool { snapshot.status == .stale || snapshot.status == .offline }
+
+    /// Cell counts that fit every watch-list currency, so the board keeps one width while rotating.
+    var boardWidths: (code: Int, value: Int, symbol: Int) {
+        let formatter = formatter
+        let parts = watchList.orderedCodes.map {
+            formatter.collapsed(code: $0, quote: snapshot.quotes[$0], baseCode: snapshot.baseCode)
+        }
+        return (parts.map(\.code.count).max() ?? 3,
+                parts.map(\.value.count).max() ?? 1,
+                parts.map(\.symbol.count).max() ?? 1)
+    }
 }

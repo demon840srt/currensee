@@ -83,10 +83,10 @@ Each phase: plan → approval → tests first → code → `./scripts/test.sh` g
 > Collapsed pill shows `CODE rate symbol` with stale dot.
 
 **Checklist:**
-- [ ] Engine tests: order, wrap-around, interval change, pause/resume, list edits keep a valid index
-- [ ] Formatting tests: decimals per currency, base symbol, he/en/ru/zh locales
-- [ ] Reduce Motion → crossfade (unit-tested flag path)
-- [ ] Manual: smooth flip, no layout jump between strings of different length
+- [x] Engine tests: order, wrap-around, interval change, pause/resume, list edits keep a valid index
+- [x] Formatting tests: decimals per currency, base symbol, he/en/ru/zh locales
+- [x] Reduce Motion → crossfade (unit-tested flag path)
+- [x] Manual: smooth flip, no layout jump between strings of different length
 
 ## Phase 6 — Hover expand + click dropdown
 **Prompt:**
