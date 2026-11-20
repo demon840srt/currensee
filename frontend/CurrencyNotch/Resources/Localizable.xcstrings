@@ -752,23 +752,6 @@
         }
       }
     },
-    "Theme looks arrive with the themes update.": {
-      "extractionState": "manual",
-      "localizations": {
-        "he": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "מראה ערכות הנושא יגיע בעדכון ערכות הנושא."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Theme looks arrive with the themes update."
-          }
-        }
-      }
-    },
     "Unlock Position": {
       "extractionState": "manual",
       "localizations": {

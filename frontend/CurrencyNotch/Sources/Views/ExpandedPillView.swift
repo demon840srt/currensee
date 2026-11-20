@@ -4,6 +4,7 @@ import SwiftUI
 /// Hover state (≈ 280×64): icon, code, rate, change % for the selected range and a sparkline (SPEC F11).
 struct ExpandedPillView: View {
     let model: AppModel
+    @Environment(\.pillTheme) private var theme
 
     var body: some View {
         if let row = model.currentRow {
@@ -16,40 +17,30 @@ struct ExpandedPillView: View {
                         StaleDot(isStale: model.isStale)
                     }
                     .font(PillFont.swiftUI)
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Color(theme.text))
                     secondLine(row)
                         .font(.system(size: 11, weight: .medium, design: .rounded).monospacedDigit())
                 }
                 Spacer(minLength: 4)
-                SparklineView(points: row.change.sparkline, direction: row.change.direction)
+                SparklineView(points: row.change.sparkline, color: theme.changeColor(row.change.direction))
                     .frame(width: 64, height: 26)
             }
             .lineLimit(1)
             .padding(.horizontal, 18)
+            .shadow(color: theme.textShadow.map { Color($0) } ?? .clear, radius: 1.5, y: 0.5)
         } else {
-            Text(verbatim: RateFormatter.missingValue).font(PillFont.swiftUI).foregroundStyle(Color.white)
+            Text(verbatim: RateFormatter.missingValue).font(PillFont.swiftUI).foregroundStyle(Color(theme.text))
         }
     }
 
     @ViewBuilder
     private func secondLine(_ row: RateRow) -> some View {
         if let freshness = model.freshnessText {
-            Text(freshness).foregroundStyle(Color.orange)
+            Text(freshness).foregroundStyle(Color(theme.warning))
         } else if let change = row.change.text {
-            Text(verbatim: "\(row.change.arrow) \(change)").foregroundStyle(ChangeColor.color(row.change.direction))
+            Text(verbatim: "\(row.change.arrow) \(change)").foregroundStyle(theme.changeColor(row.change.direction))
         } else {
-            Text("Collecting…").foregroundStyle(Color.white.opacity(0.6))
-        }
-    }
-}
-
-/// Classic Black Notch change colors (references/themes.md); per-theme colors arrive in Phase 8.
-enum ChangeColor {
-    static func color(_ direction: ChangeDirection) -> Color {
-        switch direction {
-        case .up: Color(red: 0x30 / 255, green: 0xD1 / 255, blue: 0x58 / 255)
-        case .down: Color(red: 0xFF / 255, green: 0x45 / 255, blue: 0x3A / 255)
-        case .flat: Color.white.opacity(0.6)
+            Text("Collecting…").foregroundStyle(Color(theme.secondaryText))
         }
     }
 }
@@ -85,7 +76,7 @@ struct CurrencyIconView: View {
 /// Mini line chart of normalized points (0…1, oldest → newest).
 struct SparklineView: View {
     let points: [Double]
-    let direction: ChangeDirection
+    let color: Color
 
     var body: some View {
         GeometryReader { geo in
@@ -97,7 +88,7 @@ struct SparklineView: View {
                         index == 0 ? path.move(to: CGPoint(x: x, y: y)) : path.addLine(to: CGPoint(x: x, y: y))
                     }
                 }
-                .stroke(ChangeColor.color(direction), style: StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
+                .stroke(color, style: StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
             }
         }
         .accessibilityHidden(true)

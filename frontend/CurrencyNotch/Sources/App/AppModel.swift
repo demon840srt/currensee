@@ -15,6 +15,8 @@ final class AppModel {
     private(set) var summaries: [String: ChangeSummary] = [:]
     private(set) var loginItemState: LoginItemState
     private(set) var lastError: String?
+    /// System conditions that pause theme effects (SPEC F26).
+    private(set) var effectsEnvironment: EffectsEnvironment
     let catalog = CurrencyCatalog.bundled
 
     // Window layout, set by `PillPanelController` so the SwiftUI content lines up with the panel.
@@ -34,6 +36,12 @@ final class AppModel {
     @ObservationIgnored private let rotation: RotationEngine
     @ObservationIgnored private let hoverDelay = HoverDelay()
     @ObservationIgnored private let connectivity = NetworkConnectivityMonitor()
+    @ObservationIgnored private let effectsMonitor = EffectsMonitor()
+    /// Debug builds only: `CURRENCY_NOTCH_THEME=ice` shows a theme without changing saved settings
+    /// (used for performance measurements).
+    @ObservationIgnored private let debugThemeOverride: ThemeID?
+    /// Debug builds only: `CURRENCY_NOTCH_IGNORE_BATTERY=1` runs effects on battery (for measurements).
+    @ObservationIgnored private let debugIgnoreBattery: Bool
     @ObservationIgnored private var tasks: [Task<Void, Never>] = []
 
     init(store: SettingsStore = SettingsStore(), loginItems: any LoginItemService = MainAppLoginItem()) {
@@ -44,6 +52,14 @@ final class AppModel {
         settings = editor.settings
         watchList = editor.watchList
         loginItemState = LoginItemState(status: loginItems.status)
+        effectsEnvironment = effectsMonitor.environment
+        #if DEBUG
+        debugThemeOverride = ProcessInfo.processInfo.environment["CURRENCY_NOTCH_THEME"].flatMap(ThemeID.init(rawValue:))
+        debugIgnoreBattery = ProcessInfo.processInfo.environment["CURRENCY_NOTCH_IGNORE_BATTERY"] == "1"
+        #else
+        debugThemeOverride = nil
+        debugIgnoreBattery = false
+        #endif
 
         let client = URLSessionHTTPClient()
         let coinbase = CoinbaseProvider(client: client)
@@ -98,6 +114,24 @@ final class AppModel {
         connectivity.start { online in
             Task { await service.setOnline(online) }
         }
+        effectsMonitor.onChange = { [weak self] environment in self?.effectsEnvironment = environment }
+        effectsMonitor.start()
+    }
+
+    // MARK: - Themes (SPEC §5.7)
+
+    func theme(for appearance: ThemeAppearance) -> ThemeSpec {
+        ThemeRegistry.spec(debugThemeOverride ?? settings.themeID, appearance: appearance)
+    }
+
+    func effectsRunning(for theme: ThemeSpec) -> Bool {
+        EffectsPolicy.shouldRun(theme: theme, pauseOnBattery: settings.pauseEffectsOnBattery && !debugIgnoreBattery,
+                                environment: effectsEnvironment)
+    }
+
+    /// The pill window is fully covered or hidden: effects pause.
+    func setPillOccluded(_ occluded: Bool) {
+        effectsMonitor.setOccluded(occluded)
     }
 
     func refreshNow() {

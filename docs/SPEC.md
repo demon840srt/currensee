@@ -163,3 +163,5 @@ None — every feature is core (owner decision, 2026-11-20).
 | 21 | 2026-11-20 | Display precision rule (≥1000: 2 dp; <1: ≥4 significant digits); full interval after resume | 0016 |
 | 22 | 2026-11-20 | Hover/dropdown state machine, grow-then-shrink resizing, Esc via key-capable panel, monogram crypto icons | 0017 |
 | 23 | 2026-11-20 | PreferencesEditor + AppKit settings window; login item auto-registers once on first Release launch; Show/Hide persists | 0018 |
+| 24 | 2026-11-20 | All motion in Core Animation (split-flap, particles, shimmer); theme colors adjusted to pass 4.5:1, tested | 0019 |
+| 25 | 2026-11-21 | Particles via core simulation + 12 fps display link instead of CAEmitterLayer (WindowServer cost) | 0020 |

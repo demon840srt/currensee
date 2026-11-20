@@ -121,10 +121,10 @@ Each phase: plan → approval → tests first → code → `./scripts/test.sh` g
 > Frosted Glass uses `glassEffect`. Live preview in settings.
 
 **Checklist:**
-- [ ] Theme registry test: all 5 IDs resolve; contrast ratio ≥ 4.5:1 computed in tests
-- [ ] Power-state and occlusion logic unit-tested (pause/resume decisions)
-- [ ] Manual: each theme looks right collapsed, expanded, dropdown; light + dark wallpaper
-- [ ] Manual: CPU < 8% with particles, < 2% without (Activity Monitor, 1 min)
+- [x] Theme registry test: all 5 IDs resolve; contrast ratio ≥ 4.5:1 computed in tests
+- [x] Power-state and occlusion logic unit-tested (pause/resume decisions)
+- [x] Manual: each theme looks right collapsed, expanded, dropdown; light + dark wallpaper
+- [x] Manual: CPU < 8% with particles, < 2% without (Activity Monitor, 1 min)
 
 ## Phase 9 — Rate alerts
 **Prompt:**

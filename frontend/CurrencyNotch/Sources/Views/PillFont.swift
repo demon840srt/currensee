@@ -9,7 +9,7 @@ enum PillFont {
 
     static let swiftUI = Font.system(size: size, weight: .semibold, design: .rounded).monospacedDigit()
 
-    private static let nsFont: NSFont = {
+    static let nsFont: NSFont = {
         let base = NSFont.monospacedDigitSystemFont(ofSize: size, weight: .semibold)
         guard let rounded = base.fontDescriptor.withDesign(.rounded) else { return base }
         return NSFont(descriptor: rounded, size: size) ?? base

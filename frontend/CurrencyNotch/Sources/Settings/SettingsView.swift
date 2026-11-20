@@ -176,20 +176,30 @@ private struct DisplayTab: View {
                 }
                 .pickerStyle(.radioGroup)
                 LabeledContent {
-                    ZStack {
-                        Capsule().fill(Color.black).frame(width: 200, height: 34)
-                        CollapsedBoardView(model: model)
-                    }
-                    .environment(\.layoutDirection, .leftToRight)
+                    ThemePreview(model: model)
                 } label: {
                     Text("Preview")
                 }
-                Text("Theme looks arrive with the themes update.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
+    }
+}
+
+/// Live preview of the selected theme on the collapsed pill, effects included.
+private struct ThemePreview: View {
+    let model: AppModel
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        let theme = model.theme(for: colorScheme == .dark ? .dark : .light)
+        ZStack {
+            PillSurface(size: PillLayout.collapsedSize)
+            CollapsedBoardView(model: model)
+        }
+        .environment(\.pillTheme, theme)
+        .environment(\.pillEffectsRunning, model.effectsRunning(for: theme))
+        .environment(\.layoutDirection, .leftToRight)
     }
 }
 

@@ -16,6 +16,7 @@ final class PillPanelController {
     private var dragStartOrigin: CGPoint = .zero
     private var resizeGeneration = 0
     private var screenObserver: NSObjectProtocol?
+    private var occlusionObserver: NSObjectProtocol?
     private var outsideClickMonitor: Any?
 
     init(model: AppModel, menuController: AppMenuController) {
@@ -49,6 +50,16 @@ final class PillPanelController {
         ) { [weak self] _ in
             MainActor.assumeIsolated { self?.restorePlacement() }
         }
+        // Effects pause while the pill is fully covered (SPEC F26).
+        occlusionObserver = NotificationCenter.default.addObserver(
+            forName: NSWindow.didChangeOcclusionStateNotification, object: panel, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.updateOcclusion() }
+        }
+    }
+
+    private func updateOcclusion() {
+        model.setPillOccluded(!panel.isVisible || !panel.occlusionState.contains(.visible))
     }
 
     func show() {
@@ -64,6 +75,7 @@ final class PillPanelController {
         } else {
             panel.orderFrontRegardless()
         }
+        updateOcclusion()
     }
 
     /// Launch and display changes. Does not overwrite the last-used display, so the pill returns

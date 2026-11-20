@@ -5,8 +5,10 @@ import SwiftUI
 /// The window is resized by `PillPanelController`; this view animates the content inside it.
 struct PillRootView: View {
     let model: AppModel
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
+        let theme = model.theme(for: colorScheme == .dark ? .dark : .light)
         let open = model.mode == .dropdown
         VStack(spacing: PillLayout.gap) {
             if open && model.dropdownDirection == .above { DropdownView(model: model).transition(listTransition) }
@@ -16,6 +18,8 @@ struct PillRootView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity,
                alignment: model.dropdownDirection == .below ? .top : .bottom)
         .animation(.spring(duration: 0.35, bounce: 0.15), value: model.mode)
+        .environment(\.pillTheme, theme)
+        .environment(\.pillEffectsRunning, model.effectsRunning(for: theme))
         // Codes and numbers read left-to-right even in Hebrew (SPEC F31); full RTL work is Phase 10.
         .environment(\.layoutDirection, .leftToRight)
     }
@@ -28,9 +32,7 @@ struct PillRootView: View {
         let expanded = model.mode != .collapsed
         let size = expanded ? PillLayout.expandedSize : PillLayout.collapsedSize
         return ZStack {
-            Capsule()
-                .fill(Color.black)
-                .frame(width: size.width, height: size.height)
+            PillSurface(size: size)
             if expanded {
                 ExpandedPillView(model: model).transition(.opacity)
             } else {
@@ -41,37 +43,52 @@ struct PillRootView: View {
     }
 }
 
+/// The themed capsule behind the pill content.
+struct PillSurface: View {
+    let size: CGSize
+    @Environment(\.pillTheme) private var theme
+
+    var body: some View {
+        ThemedSurface(background: theme.pillBackground, cornerRadius: size.height / 2)
+            .frame(width: size.width, height: size.height)
+    }
+}
+
 /// Collapsed content: `CODE rate symbol` as a split-flap board, plus the stale dot (SPEC F10).
 struct CollapsedBoardView: View {
     let model: AppModel
+    @Environment(\.pillTheme) private var theme
 
     var body: some View {
         let widths = model.boardWidths
+        let textColor = Color(theme.text)
+        let shadow = theme.textShadow.map { Color($0) }
         HStack(spacing: 5) {
             if let rate = model.collapsed {
-                SplitFlapText(text: rate.code, alignment: .leading, minimumLength: widths.code,
-                              cellWidth: PillFont.letterCell)
-                SplitFlapText(text: rate.value, alignment: .trailing, minimumLength: widths.value,
-                              cellWidth: PillFont.digitCell)
-                SplitFlapText(text: rate.symbol, minimumLength: widths.symbol, cellWidth: PillFont.symbolCell)
+                SplitFlapBoard(text: rate.code, alignment: .leading, minimumLength: widths.code,
+                               cellWidth: PillFont.letterCell, color: textColor, shadow: shadow)
+                SplitFlapBoard(text: rate.value, alignment: .trailing, minimumLength: widths.value,
+                               cellWidth: PillFont.digitCell, color: textColor, shadow: shadow)
+                SplitFlapBoard(text: rate.symbol, minimumLength: widths.symbol, cellWidth: PillFont.symbolCell,
+                               color: textColor, shadow: shadow)
             } else {
-                Text(verbatim: RateFormatter.missingValue)
+                Text(verbatim: RateFormatter.missingValue).foregroundStyle(textColor)
             }
             StaleDot(isStale: model.isStale)
         }
         .font(PillFont.swiftUI)
-        .foregroundStyle(Color.white)
         .lineLimit(1)
     }
 }
 
 struct StaleDot: View {
     let isStale: Bool
+    @Environment(\.pillTheme) private var theme
 
     var body: some View {
         // Space is always reserved so content doesn't shift when the dot appears.
         Circle()
-            .fill(Color.orange)
+            .fill(Color(theme.warning))
             .frame(width: 6, height: 6)
             .opacity(isStale ? 1 : 0)
             .accessibilityHidden(!isStale)

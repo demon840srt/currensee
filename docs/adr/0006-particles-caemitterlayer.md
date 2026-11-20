@@ -1,6 +1,6 @@
 # ADR-0006: Particle effects with CAEmitterLayer
 
-- Status: Accepted · Date: 2026-11-20
+- Status: Partly superseded by ADR-0020 (particles no longer use `CAEmitterLayer`) · Date: 2026-11-20
 
 ## Context
 Ice, Fire and Israel themes need full particle effects (snow, sparks, sparkles) inside a tiny,
