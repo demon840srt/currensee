@@ -5,11 +5,20 @@ let package = Package(
     name: "CurrencyCore",
     platforms: [.macOS(.v26)],
     products: [
-        .library(name: "CurrencyCore", targets: ["CurrencyCore"])
+        .library(name: "CurrencyCore", targets: ["CurrencyCore"]),
+        // Test-only mocks (ADR-0011). Never link this into the app target.
+        .library(name: "CurrencyCoreTestSupport", targets: ["CurrencyCoreTestSupport"])
     ],
     targets: [
-        .target(name: "CurrencyCore"),
-        .testTarget(name: "CurrencyCoreTests", dependencies: ["CurrencyCore"])
+        .target(
+            name: "CurrencyCore",
+            resources: [.process("Catalog/currencies.json")]
+        ),
+        .target(name: "CurrencyCoreTestSupport", dependencies: ["CurrencyCore"]),
+        .testTarget(
+            name: "CurrencyCoreTests",
+            dependencies: ["CurrencyCore", "CurrencyCoreTestSupport"]
+        )
     ],
     swiftLanguageModes: [.v6]
 )

@@ -34,7 +34,7 @@ A native macOS floating, notch-sized pill that rotates through the user's chosen
 
 **Defaults:** base `ILS`; watch list `USD, EUR, GBP, JPY, CHF, CNY, BTC, ETH`; rotation 5 s;
 refresh 120 s; range 24h; theme Classic Black Notch; language Hebrew; launch at login on;
-pause effects on battery on. Decimals: 4 for fiat, 2 for JPY and crypto.
+pause effects on battery on. Decimals: 4 for fiat, 2 for JPY, 5 for crypto (ADR-0009).
 
 ## 5. Functional requirements
 
@@ -152,3 +152,7 @@ None — every feature is core (owner decision, 2026-11-20).
 | 10 | 2026-11-20 | No bonus tier; all features core | — |
 | 11 | 2026-11-20 | Build with Xcode 26 or newer (27.2 installed); target stays macOS 26.0 | 0007 |
 | 12 | 2026-11-20 | Bundle ID and defaults suite `com.afik.CurrencyNotch` | 0008 |
+| 13 | 2026-11-20 | Crypto rates display with 5 decimals (`0.00000`) | 0009 |
+| 14 | 2026-11-20 | Base currency is never in the watch list; base change removes it | 0010 |
+| 15 | 2026-11-20 | Mocks in a `CurrencyCoreTestSupport` target, never linked into the app | 0011 |
+| 16 | 2026-11-20 | Versioned persistence envelopes; decimals stored as strings | 0012 |

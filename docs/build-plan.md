@@ -36,12 +36,12 @@ Each phase: plan → approval → tests first → code → `./scripts/test.sh` g
 > `MockRateProvider`. Tests first.
 
 **Checklist:**
-- [ ] Every entity round-trips through JSON in tests
-- [ ] Defaults match SPEC §4 exactly (base ILS, 8-currency list, 5 s, 120 s, 24h, classic, he)
-- [ ] Watch list accepts any length ≥ 1, rejects duplicates, keeps order
-- [ ] Settings migration test: unknown/older schema falls back to defaults safely
-- [ ] `DiskCache` writes atomically; corrupt file → empty, no crash
-- [ ] `./scripts/test.sh` green
+- [x] Every entity round-trips through JSON in tests
+- [x] Defaults match SPEC §4 exactly (base ILS, 8-currency list, 5 s, 120 s, 24h, classic, he)
+- [x] Watch list accepts any length ≥ 1, rejects duplicates, keeps order
+- [x] Settings migration test: unknown/older schema falls back to defaults safely
+- [x] `DiskCache` writes atomically; corrupt file → empty, no crash
+- [x] `./scripts/test.sh` green
 
 ## Phase 3 — Live rates, fallback, offline, history
 **Prompt:**

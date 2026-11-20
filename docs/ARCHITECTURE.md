@@ -32,7 +32,9 @@ A single native macOS app. There is no server and no database. The workshop's
 ```
 /backend/CurrencyCore/
   Package.swift
-  Sources/CurrencyCore/{Models,Providers,Services,Persistence,Security}/
+  Sources/CurrencyCore/{Models,Catalog,Providers,Services,Persistence,Security}/
+  Sources/CurrencyCoreTestSupport/   # mocks for tests only, never linked into the app (ADR-0011)
+  Tools/generate-catalog.swift       # regenerates Catalog/currencies.json
   Tests/CurrencyCoreTests/ (+ Fixtures/*.json recorded responses)
 /frontend/CurrencyNotch/
   project.yml                # XcodeGen spec; depends on ../../backend/CurrencyCore
