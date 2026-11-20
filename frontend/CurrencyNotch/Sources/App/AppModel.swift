@@ -7,10 +7,15 @@ import Observation
 @Observable
 final class AppModel {
     private(set) var snapshot: RateSnapshot = .empty()
+    private(set) var settings: AppSettings
+    private(set) var watchList: WatchList
     /// Code currently shown in the collapsed pill (driven by `RotationEngine`).
     private(set) var currentCode: String?
     private(set) var interaction = PillInteraction()
     private(set) var summaries: [String: ChangeSummary] = [:]
+    private(set) var loginItemState: LoginItemState
+    private(set) var lastError: String?
+    let catalog = CurrencyCatalog.bundled
 
     // Window layout, set by `PillPanelController` so the SwiftUI content lines up with the panel.
     var slotSize = PillLayout.collapsedSize
@@ -18,11 +23,12 @@ final class AppModel {
     var listHeight: CGFloat = 0
     /// Called when the pill changes between collapsed / expanded / dropdown.
     @ObservationIgnored var onModeChange: ((PillMode) -> Void)?
-    private(set) var settings: AppSettings
-    private(set) var watchList: WatchList
-    let catalog = CurrencyCatalog.bundled
+    /// Called when Show/Hide pill changes.
+    @ObservationIgnored var onPillHiddenChange: ((Bool) -> Void)?
 
     @ObservationIgnored let store: SettingsStore
+    @ObservationIgnored private var editor: PreferencesEditor
+    @ObservationIgnored private let loginItems: any LoginItemService
     @ObservationIgnored private let rateService: RateService
     @ObservationIgnored private let history: HistoryStore
     @ObservationIgnored private let rotation: RotationEngine
@@ -30,12 +36,14 @@ final class AppModel {
     @ObservationIgnored private let connectivity = NetworkConnectivityMonitor()
     @ObservationIgnored private var tasks: [Task<Void, Never>] = []
 
-    init(store: SettingsStore = SettingsStore()) {
+    init(store: SettingsStore = SettingsStore(), loginItems: any LoginItemService = MainAppLoginItem()) {
         self.store = store
-        let loadedSettings = store.loadSettings()
-        let loadedList = store.loadWatchList()
-        settings = loadedSettings
-        watchList = loadedList
+        self.loginItems = loginItems
+        let editor = PreferencesEditor(store: store)
+        self.editor = editor
+        settings = editor.settings
+        watchList = editor.watchList
+        loginItemState = LoginItemState(status: loginItems.status)
 
         let client = URLSessionHTTPClient()
         let coinbase = CoinbaseProvider(client: client)
@@ -44,32 +52,32 @@ final class AppModel {
         history = HistoryStore(cache: cache)
         rateService = RateService(primary: coinbase, fallback: frankfurter, cache: cache, history: history,
                                   fiatHistory: frankfurter, cryptoHistory: coinbase)
-        rotation = RotationEngine(codes: loadedList.orderedCodes, interval: loadedSettings.rotationInterval)
-        currentCode = loadedList.orderedCodes.first
+        rotation = RotationEngine(codes: editor.watchList.orderedCodes, interval: editor.settings.rotationInterval)
+        currentCode = editor.watchList.orderedCodes.first
     }
 
     func start() {
         let service = rateService
         let history = history
+        let rotation = rotation
+        let hoverDelay = hoverDelay
         let settings = settings
         let watchList = watchList
 
-        let rotation = rotation
         tasks.append(Task { [weak self] in
             for await snapshot in service.snapshots {
                 self?.snapshot = snapshot
                 if self?.mode != .collapsed { self?.refreshSummaries() }
             }
         })
-        let hoverDelay = hoverDelay
-        tasks.append(Task { [weak self] in
-            for await hovering in hoverDelay.events {
-                self?.send(hovering ? .hoverBegan : .hoverEnded)
-            }
-        })
         tasks.append(Task { [weak self] in
             for await code in rotation.currentCodes {
                 self?.currentCode = code
+            }
+        })
+        tasks.append(Task { [weak self] in
+            for await hovering in hoverDelay.events {
+                self?.send(hovering ? .hoverBegan : .hoverEnded)
             }
         })
         tasks.append(Task { await rotation.start() })
@@ -97,11 +105,69 @@ final class AppModel {
         Task { await service.triggerRefresh() }
     }
 
+    // MARK: - Preferences (SPEC F23–F24: every change applies instantly)
+
+    /// Applies a settings change; returns false (and sets `lastError`) if it was rejected.
+    @discardableResult
+    func apply(_ change: PreferenceChange) -> Bool {
+        let effects: PreferenceEffects
+        do {
+            effects = try editor.apply(change)
+        } catch {
+            lastError = String(describing: error)
+            return false
+        }
+        lastError = nil
+        settings = editor.settings
+        watchList = editor.watchList
+        react(to: effects)
+        return true
+    }
+
+    private func react(to effects: PreferenceEffects) {
+        let service = rateService
+        let rotation = rotation
+        let list = watchList
+        let settings = settings
+        if effects.contains(.reconfigureRates) {
+            let refresh = effects.contains(.refreshRatesNow)
+            Task {
+                await service.configure(baseCode: list.baseCode, codes: list.orderedCodes,
+                                        refreshInterval: settings.refreshInterval)
+                if refresh { await service.triggerRefresh() }
+            }
+        }
+        if effects.contains(.rotationCodes) { Task { await rotation.setCodes(list.orderedCodes) } }
+        if effects.contains(.rotationInterval) { Task { await rotation.setInterval(settings.rotationInterval) } }
+        if effects.contains(.summaries) { refreshSummaries() }
+        if effects.contains(.loginItem) { updateLoginItem(settings.launchAtLogin) }
+        if effects.contains(.pillVisibility) { onPillHiddenChange?(settings.isPillHidden) }
+    }
+
     var isPositionLocked: Bool { settings.isPositionLocked }
 
-    func setPositionLocked(_ locked: Bool) {
-        settings.isPositionLocked = locked
-        store.save(settings)
+    // MARK: - Launch at login (SPEC F32)
+
+    func reloadLoginItemState() {
+        loginItemState = LoginItemState(status: loginItems.status)
+    }
+
+    private func updateLoginItem(_ on: Bool) {
+        do {
+            loginItemState = try LoginItemController.set(on, service: loginItems)
+        } catch {
+            lastError = String(describing: error)
+            reloadLoginItemState()
+        }
+    }
+
+    /// SPEC §4 default is "on": register once, on the first Release launch (ADR-0018).
+    func autoRegisterLoginItemIfNeeded(isReleaseBuild: Bool) {
+        guard LoginItemController.shouldAutoRegister(alreadyAttempted: store.loadDidAttemptLoginItemRegistration(),
+                                                     wantsLaunchAtLogin: settings.launchAtLogin,
+                                                     isReleaseBuild: isReleaseBuild) else { return }
+        store.saveDidAttemptLoginItemRegistration()
+        updateLoginItem(true)
     }
 
     // MARK: - Interaction (SPEC F9, F11–F14)
@@ -123,8 +189,9 @@ final class AppModel {
         let oldMode = interaction.mode
         guard interaction.handle(event) else { return }
         let diff = PillInteraction.diff(from: before, to: interaction.pauseReasons)
-        diff.pause.forEach(pauseRotation)
-        diff.resume.forEach(resumeRotation)
+        let rotation = rotation
+        for reason in diff.pause { Task { await rotation.pause(reason) } }
+        for reason in diff.resume { Task { await rotation.resume(reason) } }
         guard interaction.mode != oldMode else { return }
         if interaction.mode != .collapsed { refreshSummaries() }
         onModeChange?(interaction.mode)
@@ -144,19 +211,6 @@ final class AppModel {
             }
             self?.summaries = fresh
         }
-    }
-
-    // MARK: - Rotation
-
-    /// Hover and the dropdown pause rotation (SPEC F9); wired up in Phase 6.
-    func pauseRotation(_ reason: RotationPauseReason) {
-        let rotation = rotation
-        Task { await rotation.pause(reason) }
-    }
-
-    func resumeRotation(_ reason: RotationPauseReason) {
-        let rotation = rotation
-        Task { await rotation.resume(reason) }
     }
 
     // MARK: - Display
@@ -207,5 +261,9 @@ final class AppModel {
         return (parts.map(\.code.count).max() ?? 3,
                 parts.map(\.value.count).max() ?? 1,
                 parts.map(\.symbol.count).max() ?? 1)
+    }
+
+    func localizedName(for code: String) -> String {
+        catalog.localizedName(for: code, locale: settings.language.formattingLocale)
     }
 }

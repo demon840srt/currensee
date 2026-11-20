@@ -107,11 +107,11 @@ Each phase: plan → approval → tests first → code → `./scripts/test.sh` g
 > Changes apply live. Launch at login via `SMAppService`.
 
 **Checklist:**
-- [ ] Catalog search (code + localized name) unit-tested, fiat + crypto
-- [ ] Add/remove/reorder/base change persist and reflect in pill immediately
-- [ ] Intervals clamp to allowed ranges
-- [ ] Launch-at-login toggle reflects real `SMAppService` status
-- [ ] Manual: right-click menu identical to menu bar menu
+- [x] Catalog search (code + localized name) unit-tested, fiat + crypto
+- [x] Add/remove/reorder/base change persist and reflect in pill immediately
+- [x] Intervals clamp to allowed ranges
+- [x] Launch-at-login toggle reflects real `SMAppService` status
+- [x] Manual: right-click menu identical to menu bar menu
 
 ## Phase 8 — Themes and particles
 **Prompt:**

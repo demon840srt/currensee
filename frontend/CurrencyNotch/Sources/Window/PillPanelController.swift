@@ -42,6 +42,7 @@ final class PillPanelController {
         content.onDragEnded = { [weak self] in self?.finishDrag() }
         panel.onEscape = { [weak model] in model?.send(.escape) }
         model.onModeChange = { [weak self] mode in self?.apply(mode) }
+        model.onPillHiddenChange = { [weak self] hidden in self?.setHidden(hidden) }
 
         screenObserver = NotificationCenter.default.addObserver(
             forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main
@@ -52,7 +53,17 @@ final class PillPanelController {
 
     func show() {
         restorePlacement()
-        panel.orderFrontRegardless()
+        setHidden(model.settings.isPillHidden)
+    }
+
+    /// Show/Hide pill from the menu (persists, ADR-0018).
+    func setHidden(_ hidden: Bool) {
+        if hidden {
+            if model.mode == .dropdown { model.send(.escape) }
+            panel.orderOut(nil)
+        } else {
+            panel.orderFrontRegardless()
+        }
     }
 
     /// Launch and display changes. Does not overwrite the last-used display, so the pill returns

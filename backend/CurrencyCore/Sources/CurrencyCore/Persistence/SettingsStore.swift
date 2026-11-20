@@ -12,6 +12,7 @@ public struct SettingsStore {
         case alerts = "alerts"
         case placements = "placements"
         case lastScreenID = "lastScreenID"
+        case loginItemAttempted = "loginItemAttempted"
     }
 
     private let defaults: UserDefaults
@@ -48,6 +49,10 @@ public struct SettingsStore {
     /// The display the pill was last placed on.
     public func loadLastScreenID() -> String? { load(String.self, .lastScreenID) }
     public func saveLastScreenID(_ screenID: String) { store(screenID, .lastScreenID) }
+
+    /// Whether the one-time launch-at-login registration was already attempted (ADR-0018).
+    public func loadDidAttemptLoginItemRegistration() -> Bool { load(Bool.self, .loginItemAttempted) ?? false }
+    public func saveDidAttemptLoginItemRegistration() { store(true, .loginItemAttempted) }
 
     // MARK: - Private
 

@@ -30,7 +30,7 @@ A native macOS floating, notch-sized pill that rotates through the user's chosen
 | RateAlert | id, quoteCode, baseCode, direction (above/below), threshold, isArmed, lastTriggeredAt | UserDefaults |
 | WidgetPlacement | screenID, originX, originY (lock is global, ADR-0015) | UserDefaults (one per screen) + last-used screen ID |
 | ThemeID | ice, fire, israel, classicNotch, frostedGlass | — |
-| AppSettings | rotationInterval (s), refreshInterval (s), changeRange (24h/7d/30d), themeID, language, launchAtLogin, pauseEffectsOnBattery, isPositionLocked | UserDefaults |
+| AppSettings | rotationInterval (s), refreshInterval (s), changeRange (24h/7d/30d), themeID, language, launchAtLogin, pauseEffectsOnBattery, isPositionLocked, isPillHidden | UserDefaults |
 
 **Defaults:** base `ILS`; watch list `USD, EUR, GBP, JPY, CHF, CNY, BTC, ETH`; rotation 5 s;
 refresh 120 s; range 24h; theme Classic Black Notch; language Hebrew; launch at login on;
@@ -162,3 +162,4 @@ None — every feature is core (owner decision, 2026-11-20).
 | 20 | 2026-11-20 | One pill with per-display positions + last-used display; global position lock | 0015 |
 | 21 | 2026-11-20 | Display precision rule (≥1000: 2 dp; <1: ≥4 significant digits); full interval after resume | 0016 |
 | 22 | 2026-11-20 | Hover/dropdown state machine, grow-then-shrink resizing, Esc via key-capable panel, monogram crypto icons | 0017 |
+| 23 | 2026-11-20 | PreferencesEditor + AppKit settings window; login item auto-registers once on first Release launch; Show/Hide persists | 0018 |

@@ -6,15 +6,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var menuController: AppMenuController?
     private var pillController: PillPanelController?
     private var statusItemController: StatusItemController?
+    private var settingsController: SettingsWindowController?
     private var wakeObserver: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let model = AppModel()
         let menuController = AppMenuController(model: model)
         let pillController = PillPanelController(model: model, menuController: menuController)
+        let settingsController = SettingsWindowController(model: model)
+        menuController.openSettings = { [weak settingsController] in settingsController?.show() }
         statusItemController = StatusItemController(menuController: menuController)
         pillController.show()
         model.start()
+        #if DEBUG
+        model.autoRegisterLoginItemIfNeeded(isReleaseBuild: false)
+        #else
+        model.autoRegisterLoginItemIfNeeded(isReleaseBuild: true)
+        #endif
 
         // Refresh on wake from sleep (SPEC F18).
         wakeObserver = NSWorkspace.shared.notificationCenter.addObserver(
@@ -26,5 +34,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.model = model
         self.menuController = menuController
         self.pillController = pillController
+        self.settingsController = settingsController
     }
 }

@@ -25,6 +25,8 @@ public struct AppSettings: Codable, Sendable, Equatable {
     public var pauseEffectsOnBattery = true
     /// Global position lock: when on, dragging the pill does nothing (ADR-0015).
     public var isPositionLocked = false
+    /// Pill hidden from the menu (Show/Hide); persists across launches (ADR-0018).
+    public var isPillHidden = false
 
     private var storedRotation: TimeInterval = 5
     private var storedRefresh: TimeInterval = 120
@@ -42,7 +44,7 @@ public struct AppSettings: Codable, Sendable, Equatable {
     }
 
     enum CodingKeys: String, CodingKey {
-        case rotationInterval, refreshInterval, changeRange, themeID, language, launchAtLogin, pauseEffectsOnBattery, isPositionLocked
+        case rotationInterval, refreshInterval, changeRange, themeID, language, launchAtLogin, pauseEffectsOnBattery, isPositionLocked, isPillHidden
     }
 
     /// Lenient per-field decoding: a missing or unknown value falls back to its default instead of
@@ -58,6 +60,7 @@ public struct AppSettings: Codable, Sendable, Equatable {
         if let v = try? c.decode(Bool.self, forKey: .launchAtLogin) { launchAtLogin = v }
         if let v = try? c.decode(Bool.self, forKey: .pauseEffectsOnBattery) { pauseEffectsOnBattery = v }
         if let v = try? c.decode(Bool.self, forKey: .isPositionLocked) { isPositionLocked = v }
+        if let v = try? c.decode(Bool.self, forKey: .isPillHidden) { isPillHidden = v }
     }
 
     public func encode(to encoder: any Encoder) throws {
@@ -70,5 +73,6 @@ public struct AppSettings: Codable, Sendable, Equatable {
         try c.encode(launchAtLogin, forKey: .launchAtLogin)
         try c.encode(pauseEffectsOnBattery, forKey: .pauseEffectsOnBattery)
         try c.encode(isPositionLocked, forKey: .isPositionLocked)
+        try c.encode(isPillHidden, forKey: .isPillHidden)
     }
 }
