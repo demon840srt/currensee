@@ -21,7 +21,7 @@ struct SettingsStoreTests {
             settings.rotationInterval = 12
             let list = try WatchList(baseCode: "USD", orderedCodes: ["EUR", "BTC"])
             let alert = RateAlert(quoteCode: "EUR", baseCode: "USD", direction: .below, threshold: dec("1.05"))
-            let placement = WidgetPlacement(screenID: "s1", originX: 10, originY: 20, isLocked: true)
+            let placement = WidgetPlacement(screenID: "s1", originX: 10, originY: 20)
 
             let writer = SettingsStore(defaults: defaults)
             writer.save(settings)
@@ -41,9 +41,9 @@ struct SettingsStoreTests {
     @Test func placementsAreStoredPerScreen() {
         withTestDefaults { defaults in
             let store = SettingsStore(defaults: defaults)
-            store.savePlacement(WidgetPlacement(screenID: "a", originX: 1, originY: 1, isLocked: false))
-            store.savePlacement(WidgetPlacement(screenID: "b", originX: 2, originY: 2, isLocked: false))
-            store.savePlacement(WidgetPlacement(screenID: "a", originX: 3, originY: 3, isLocked: true))
+            store.savePlacement(WidgetPlacement(screenID: "a", originX: 1, originY: 1))
+            store.savePlacement(WidgetPlacement(screenID: "b", originX: 2, originY: 2))
+            store.savePlacement(WidgetPlacement(screenID: "a", originX: 3, originY: 3))
             let all = store.loadPlacements()
             #expect(all.count == 2)
             #expect(all["a"]?.originX == 3)

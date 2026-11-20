@@ -11,9 +11,11 @@ MIN_XCODE_MAJOR=26
 log() { printf '\033[1m==> %s\033[0m\n' "$*"; }
 die() { printf '\033[31merror:\033[0m %s\n' "$*" >&2; exit 1; }
 
-# Regenerate the Xcode project if it is missing or older than project.yml.
+# Regenerate the Xcode project every time (about a second) so added or removed files are always picked up.
 ensure_project() {
-    if [[ ! -d "$PROJECT" || "$APP_DIR/project.yml" -nt "$PROJECT/project.pbxproj" ]]; then
+    if [[ ! -d "$PROJECT" ]]; then
         "$ROOT_DIR/scripts/bootstrap.sh"
+    else
+        (cd "$APP_DIR" && xcodegen generate --quiet)
     fi
 }

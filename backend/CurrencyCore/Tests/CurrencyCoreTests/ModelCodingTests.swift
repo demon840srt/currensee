@@ -56,7 +56,7 @@ struct ModelCodingTests {
     }
 
     @Test func widgetPlacement() throws {
-        let value = WidgetPlacement(screenID: "display-1", originX: 656, originY: 910.5, isLocked: true)
+        let value = WidgetPlacement(screenID: "display-1", originX: 656, originY: 910.5)
         #expect(try roundTrip(value) == value)
     }
 

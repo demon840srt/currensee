@@ -4,11 +4,32 @@
     "Currency Notch" : {
       "shouldTranslate" : false
     },
+    "Lock Position" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "he" : { "stringUnit" : { "state" : "translated", "value" : "נעילת מיקום" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Lock Position" } }
+      }
+    },
     "Quit" : {
       "extractionState" : "manual",
       "localizations" : {
         "he" : { "stringUnit" : { "state" : "translated", "value" : "יציאה" } },
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Quit" } }
+      }
+    },
+    "Rates are out of date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "he" : { "stringUnit" : { "state" : "translated", "value" : "השערים אינם עדכניים" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Rates are out of date" } }
+      }
+    },
+    "Unlock Position" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "he" : { "stringUnit" : { "state" : "translated", "value" : "ביטול נעילת מיקום" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Unlock Position" } }
       }
     }
   },

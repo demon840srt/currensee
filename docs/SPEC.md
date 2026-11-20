@@ -28,9 +28,9 @@ A native macOS floating, notch-sized pill that rotates through the user's chosen
 | HistoryPoint | quoteCode, baseCode, timestamp, value | `history.json` (Application Support) |
 | WatchList | baseCode, orderedCodes[] (any length ≥ 1) | UserDefaults |
 | RateAlert | id, quoteCode, baseCode, direction (above/below), threshold, isArmed, lastTriggeredAt | UserDefaults |
-| WidgetPlacement | screenID, originX, originY, isLocked | UserDefaults (one per screen) |
+| WidgetPlacement | screenID, originX, originY (lock is global, ADR-0015) | UserDefaults (one per screen) + last-used screen ID |
 | ThemeID | ice, fire, israel, classicNotch, frostedGlass | — |
-| AppSettings | rotationInterval (s), refreshInterval (s), changeRange (24h/7d/30d), themeID, language, launchAtLogin, pauseEffectsOnBattery | UserDefaults |
+| AppSettings | rotationInterval (s), refreshInterval (s), changeRange (24h/7d/30d), themeID, language, launchAtLogin, pauseEffectsOnBattery, isPositionLocked | UserDefaults |
 
 **Defaults:** base `ILS`; watch list `USD, EUR, GBP, JPY, CHF, CNY, BTC, ETH`; rotation 5 s;
 refresh 120 s; range 24h; theme Classic Black Notch; language Hebrew; launch at login on;
@@ -158,3 +158,5 @@ None — every feature is core (owner decision, 2026-11-20).
 | 16 | 2026-11-20 | Versioned persistence envelopes; decimals stored as strings | 0012 |
 | 17 | 2026-11-20 | Frankfurter v2 flat-array shape recorded; fallback drops crypto | 0013 |
 | 18 | 2026-11-20 | Intraday history 48 h, daily 35 d; 24h series seeded from yesterday's daily value | 0014 |
+| 19 | 2026-11-20 | Desktop level confirmed on macOS 26; `.fullScreenNone` removed (it hides the window) | 0004 |
+| 20 | 2026-11-20 | One pill with per-display positions + last-used display; global position lock | 0015 |

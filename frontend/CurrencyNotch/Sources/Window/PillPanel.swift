@@ -1,10 +1,11 @@
 import AppKit
-import SwiftUI
 
-/// Borderless, non-activating panel hosting the pill.
-/// Phase 1: normal level, fixed position. Desktop level, Spaces, drag and lock arrive in Phase 4.
+/// Borderless, non-activating panel at desktop level on every Space (SPEC F1–F2, ADR-0004).
 final class PillPanel: NSPanel {
-    init() {
+    /// Just above the desktop icons, below normal app windows.
+    static let desktopLevel = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.desktopIconWindow)) + 1)
+
+    init(contentView: NSView) {
         super.init(
             contentRect: CGRect(origin: .zero, size: PillGeometry.collapsedSize),
             styleMask: [.borderless, .nonactivatingPanel],
@@ -16,22 +17,13 @@ final class PillPanel: NSPanel {
         hasShadow = false
         hidesOnDeactivate = false
         isReleasedWhenClosed = false
-        contentView = NSHostingView(rootView: PillView())
+        isMovable = false            // we move it ourselves so clicks and drags can be told apart
+        acceptsMouseMovedEvents = true
+        level = Self.desktopLevel
+        collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
+        self.contentView = contentView
     }
 
     override var canBecomeKey: Bool { false }
     override var canBecomeMain: Bool { false }
-
-    func moveToTopCenter(of screen: NSScreen?) {
-        guard let screen = screen ?? NSScreen.screens.first else { return }
-        setFrameOrigin(PillGeometry.topCenterOrigin(size: frame.size, in: screen.visibleFrame))
-    }
-}
-
-private struct PillView: View {
-    var body: some View {
-        Capsule()
-            .fill(Color.black)
-            .frame(width: PillGeometry.collapsedSize.width, height: PillGeometry.collapsedSize.height)
-    }
 }

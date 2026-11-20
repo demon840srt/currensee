@@ -11,6 +11,7 @@ public struct SettingsStore {
         case watchList = "watchList"
         case alerts = "alerts"
         case placements = "placements"
+        case lastScreenID = "lastScreenID"
     }
 
     private let defaults: UserDefaults
@@ -43,6 +44,10 @@ public struct SettingsStore {
         all[placement.screenID] = placement
         store(all, .placements)
     }
+
+    /// The display the pill was last placed on.
+    public func loadLastScreenID() -> String? { load(String.self, .lastScreenID) }
+    public func saveLastScreenID(_ screenID: String) { store(screenID, .lastScreenID) }
 
     // MARK: - Private
 

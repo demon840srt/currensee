@@ -70,11 +70,11 @@ Each phase: plan → approval → tests first → code → `./scripts/test.sh` g
 > display top-center, clamped on screen), and lock/unlock in the menu bar and right-click menu.
 
 **Checklist:**
-- [ ] Spike result recorded in ADR-0004
-- [ ] Placement math unit-tested (clamp, missing display, multiple displays)
-- [ ] Click-vs-drag threshold unit-tested
-- [ ] Locked: drag does nothing, click still works
-- [ ] Manual: visible on every Space; draggable onto a second display; position restored after relaunch
+- [x] Spike result recorded in ADR-0004
+- [x] Placement math unit-tested (clamp, missing display, multiple displays)
+- [x] Click-vs-drag threshold unit-tested
+- [x] Locked: drag does nothing, click still works
+- [x] Manual: visible on every Space; draggable onto a second display; position restored after relaunch
 
 ## Phase 5 — Rotation + split-flap
 **Prompt:**
