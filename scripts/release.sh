@@ -22,8 +22,10 @@ for arg in "$@"; do
     esac
 done
 
-APP_NAME="CurrencyNotch.app"
+APP_NAME="CurrenSee.app"
 INSTALL_PATH="/Applications/$APP_NAME"
+# Same app under its pre-rename name (ADR-0024); replaced by the new copy.
+LEGACY_INSTALL_PATH="/Applications/CurrencyNotch.app"
 RELEASE_APP="$BUILD_DIR/DerivedData/Build/Products/Release/$APP_NAME"
 
 if (( RUN_TESTS )); then
@@ -31,7 +33,7 @@ if (( RUN_TESTS )); then
 fi
 
 ensure_project
-log "Building CurrencyNotch (Release)"
+log "Building CurrenSee (Release)"
 xcodebuild build \
     -project "$PROJECT" \
     -scheme "$SCHEME" \
@@ -59,33 +61,37 @@ if plutil -p "$RELEASE_APP/Contents/Info.plist" | grep -q NSAppTransportSecurity
     die "Info.plist contains App Transport Security exceptions."
 fi
 for debug_switch in CURRENCY_NOTCH_THEME CURRENCY_NOTCH_IGNORE_BATTERY CURRENCY_NOTCH_EFFECTS; do
-    if strings -a "$RELEASE_APP/Contents/MacOS/CurrencyNotch" | grep -q "$debug_switch"; then
+    if strings -a "$RELEASE_APP/Contents/MacOS/CurrenSee" | grep -q "$debug_switch"; then
         die "Debug-only switch $debug_switch found in the Release binary."
     fi
 done
 version="$(plutil -extract CFBundleShortVersionString raw "$RELEASE_APP/Contents/Info.plist")"
 echo "    signature valid, $flags, sandbox + network client only, no ATS exceptions, no Debug switches"
 
-if [[ -d "$INSTALL_PATH" ]]; then
+existing=()
+[[ -d "$INSTALL_PATH" ]] && existing+=("$INSTALL_PATH")
+[[ -d "$LEGACY_INSTALL_PATH" ]] && existing+=("$LEGACY_INSTALL_PATH")
+if (( ${#existing[@]} )); then
     if (( ! ASSUME_YES )); then
         if [[ -t 0 ]]; then
-            read -r -p "Replace the existing $INSTALL_PATH? [y/N] " answer
+            read -r -p "Replace ${existing[*]}? [y/N] " answer
             [[ "$answer" =~ ^[Yy]$ ]] || die "Not replaced. Nothing installed."
         else
-            die "$INSTALL_PATH already exists. Re-run with --yes to replace it."
+            die "${existing[*]} already exists. Re-run with --yes to replace it."
         fi
     fi
     log "Quitting the running app (if any)"
     osascript -e 'tell application id "com.afik.CurrencyNotch" to quit' >/dev/null 2>&1 || true
     sleep 1
+    pkill -x CurrenSee 2>/dev/null || true
     pkill -x CurrencyNotch 2>/dev/null || true
-    rm -rf "$INSTALL_PATH"
+    rm -rf "${existing[@]}"
 fi
 
 log "Installing to $INSTALL_PATH"
 ditto "$RELEASE_APP" "$INSTALL_PATH"
 codesign --verify --deep --strict "$INSTALL_PATH" || die "Installed copy failed verification."
-echo "    Currency Notch $version installed"
+echo "    CurrenSee $version installed"
 
 if (( MAKE_DMG )); then
     log "Creating backup DMG"
@@ -94,8 +100,8 @@ if (( MAKE_DMG )); then
     trap 'rm -rf "$staging"' EXIT
     ditto "$RELEASE_APP" "$staging/$APP_NAME"
     ln -s /Applications "$staging/Applications"
-    dmg="$ROOT_DIR/dist/CurrencyNotch-$version.dmg"
-    hdiutil create -volname "Currency Notch" -srcfolder "$staging" -ov -format UDZO "$dmg" -quiet
+    dmg="$ROOT_DIR/dist/CurrenSee-$version.dmg"
+    hdiutil create -volname "CurrenSee" -srcfolder "$staging" -ov -format UDZO "$dmg" -quiet
     echo "    $dmg"
 fi
 

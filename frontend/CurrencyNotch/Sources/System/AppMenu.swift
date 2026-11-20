@@ -56,7 +56,7 @@ final class StatusItemController {
     init(menuController: AppMenuController) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem.button?.image = NSImage(systemSymbolName: "dollarsign.circle",
-                                           accessibilityDescription: String(localized: "Currency Notch"))
+                                           accessibilityDescription: String(localized: "CurrenSee"))
         let menu = menuController.makeMenu()
         menu.delegate = menuController
         statusItem.menu = menu

@@ -1,4 +1,4 @@
-# Currency Notch — CLAUDE.md
+# Currency Notch (app name: CurrenSee) — CLAUDE.md
 
 Native macOS 26 floating notch-sized pill that rotates live exchange rates (fiat + crypto).
 Full spec: `docs/SPEC.md` · Architecture: `docs/ARCHITECTURE.md` · Plan: `docs/build-plan.md`

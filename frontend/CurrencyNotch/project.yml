@@ -38,7 +38,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.afik.CurrencyNotch
-        PRODUCT_NAME: CurrencyNotch
+        PRODUCT_NAME: CurrenSee            # app name (ADR-0024)
+        PRODUCT_MODULE_NAME: CurrencyNotch # code module stays; tests use @testable import CurrencyNotch
         INFOPLIST_FILE: Resources/Info.plist
         GENERATE_INFOPLIST_FILE: NO
         CODE_SIGN_ENTITLEMENTS: Resources/CurrencyNotch.entitlements
@@ -63,6 +64,9 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.afik.CurrencyNotchTests
         GENERATE_INFOPLIST_FILE: YES
+        # XcodeGen derives the host from the target name; the product is named CurrenSee (ADR-0024).
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/CurrenSee.app/Contents/MacOS/CurrenSee
+        BUNDLE_LOADER: $(TEST_HOST)
 
 schemes:
   CurrencyNotch:

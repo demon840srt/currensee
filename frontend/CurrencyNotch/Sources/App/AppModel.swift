@@ -143,7 +143,7 @@ final class AppModel {
         editor.saveEvaluatedAlerts(result.alerts)
         alerts = editor.alerts
         for alert in result.fired {
-            notifier.post(title: String(localized: "Currency Notch"), body: notificationBody(for: alert),
+            notifier.post(title: String(localized: "CurrenSee"), body: notificationBody(for: alert),
                           identifier: "\(alert.id.uuidString)-\(Int(now.timeIntervalSince1970))")
         }
     }

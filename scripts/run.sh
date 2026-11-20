@@ -4,7 +4,7 @@ set -euo pipefail
 source "$(dirname "$0")/lib.sh"
 
 "$ROOT_DIR/scripts/build.sh"
-APP_PATH="$BUILD_DIR/DerivedData/Build/Products/Debug/CurrencyNotch.app"
+APP_PATH="$BUILD_DIR/DerivedData/Build/Products/Debug/CurrenSee.app"
 
 if [[ -f "$ROOT_DIR/.env" ]]; then
     set -a
@@ -14,9 +14,9 @@ if [[ -f "$ROOT_DIR/.env" ]]; then
     log "Loaded .env (values not shown)"
 fi
 
-pkill -x CurrencyNotch 2>/dev/null || true
-log "Launching CurrencyNotch"
+pkill -x CurrenSee 2>/dev/null || true
+log "Launching CurrenSee"
 # Run the binary directly so the exported environment reaches the app.
-"$APP_PATH/Contents/MacOS/CurrencyNotch" >/dev/null 2>&1 &
+"$APP_PATH/Contents/MacOS/CurrenSee" >/dev/null 2>&1 &
 disown
 echo "    pid $!"

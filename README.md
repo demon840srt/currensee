@@ -1,4 +1,4 @@
-# Currency Notch
+# CurrenSee
 
 A small, notch-sized pill that floats on your macOS desktop and rotates through the exchange rates you choose —
 fiat and crypto — with a split-flap "airport board" flip. Hover for change % and a sparkline, click for the full
@@ -14,8 +14,8 @@ list. Built for personal use on macOS 26 (ADR-0023): no account, no server, no t
 ./scripts/release.sh
 ```
 This runs all tests, builds a Release copy, checks that it's sandboxed (network access only) with Hardened
-Runtime, and installs it as `/Applications/CurrencyNotch.app`. Then open it from Applications or with
-`open /Applications/CurrencyNotch.app`.
+Runtime, and installs it as `/Applications/CurrenSee.app`. Then open it from Applications or with
+`open /Applications/CurrenSee.app`.
 
 Options: `--open` launches it afterwards, `--dmg` also saves a backup DMG in `dist/`, `--yes` replaces an existing
 copy without asking.
@@ -41,8 +41,8 @@ first; add `--yes` to skip the question). Settings, watch list, alerts and histo
 
 ## Uninstall
 1. Quit from the menu-bar icon, and switch off **Launch at login** first if you turned it on.
-2. Delete `/Applications/CurrencyNotch.app`.
-3. Optional — remove settings and cached rates/history:
+2. Delete `/Applications/CurrenSee.app`.
+3. Optional — remove settings and cached rates/history (the folder keeps the app's original internal ID):
    ```bash
    rm -rf ~/Library/Containers/com.afik.CurrencyNotch
    ```

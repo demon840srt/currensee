@@ -736,6 +736,44 @@
         }
       }
     },
+    "CurrenSee": {
+      "shouldTranslate": false
+    },
+    "CurrenSee Settings": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הגדרות CurrenSee"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CurrenSee Settings"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustes de CurrenSee"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настройки CurrenSee"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CurrenSee 设置"
+          }
+        }
+      }
+    },
     "Currencies": {
       "extractionState": "manual",
       "localizations": {
@@ -802,44 +840,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "币种"
-          }
-        }
-      }
-    },
-    "Currency Notch": {
-      "shouldTranslate": false
-    },
-    "Currency Notch Settings": {
-      "extractionState": "manual",
-      "localizations": {
-        "he": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "הגדרות Currency Notch"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Currency Notch Settings"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajustes de Currency Notch"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Настройки Currency Notch"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Currency Notch 设置"
           }
         }
       }
@@ -1614,37 +1614,37 @@
         }
       }
     },
-    "Notifications are turned off for Currency Notch, so alerts can't notify you.": {
+    "Notifications are turned off for CurrenSee, so alerts can't notify you.": {
       "extractionState": "manual",
       "localizations": {
         "he": {
           "stringUnit": {
             "state": "translated",
-            "value": "ההתראות כבויות עבור Currency Notch, ולכן ההתראות לא יוכלו להודיע לך."
+            "value": "ההתראות כבויות עבור CurrenSee, ולכן ההתראות לא יוכלו להודיע לך."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Notifications are turned off for Currency Notch, so alerts can't notify you."
+            "value": "Notifications are turned off for CurrenSee, so alerts can't notify you."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Las notificaciones de Currency Notch están desactivadas; las alertas no podrán avisarte."
+            "value": "Las notificaciones de CurrenSee están desactivadas; las alertas no podrán avisarte."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Уведомления Currency Notch отключены, поэтому оповещения не смогут вас уведомить."
+            "value": "Уведомления CurrenSee отключены, поэтому оповещения не смогут вас уведомить."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Currency Notch 的通知已关闭，提醒将无法通知你。"
+            "value": "CurrenSee 的通知已关闭，提醒将无法通知你。"
           }
         }
       }
@@ -2034,37 +2034,37 @@
         }
       }
     },
-    "Restart Currency Notch to switch language.": {
+    "Restart CurrenSee to switch language.": {
       "extractionState": "manual",
       "localizations": {
         "he": {
           "stringUnit": {
             "state": "translated",
-            "value": "יש להפעיל מחדש את Currency Notch כדי להחליף שפה."
+            "value": "יש להפעיל מחדש את CurrenSee כדי להחליף שפה."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Restart Currency Notch to switch language."
+            "value": "Restart CurrenSee to switch language."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reinicia Currency Notch para cambiar el idioma."
+            "value": "Reinicia CurrenSee para cambiar el idioma."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перезапустите Currency Notch, чтобы сменить язык."
+            "value": "Перезапустите CurrenSee, чтобы сменить язык."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "重新启动 Currency Notch 以切换语言。"
+            "value": "重新启动 CurrenSee 以切换语言。"
           }
         }
       }
@@ -2559,37 +2559,37 @@
         }
       }
     },
-    "macOS needs your approval to open Currency Notch at login.": {
+    "macOS needs your approval to open CurrenSee at login.": {
       "extractionState": "manual",
       "localizations": {
         "he": {
           "stringUnit": {
             "state": "translated",
-            "value": "‏macOS צריך את אישורך כדי לפתוח את Currency Notch בכניסה למערכת."
+            "value": "‏macOS צריך את אישורך כדי לפתוח את CurrenSee בכניסה למערכת."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "macOS needs your approval to open Currency Notch at login."
+            "value": "macOS needs your approval to open CurrenSee at login."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "macOS necesita tu aprobación para abrir Currency Notch al iniciar sesión."
+            "value": "macOS necesita tu aprobación para abrir CurrenSee al iniciar sesión."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "macOS требуется ваше разрешение на запуск Currency Notch при входе."
+            "value": "macOS требуется ваше разрешение на запуск CurrenSee при входе."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "macOS 需要你的批准才能在登录时打开 Currency Notch。"
+            "value": "macOS 需要你的批准才能在登录时打开 CurrenSee。"
           }
         }
       }

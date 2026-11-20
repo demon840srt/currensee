@@ -15,7 +15,7 @@ final class SettingsWindowController {
     func show() {
         if window == nil {
             let window = NSWindow(contentViewController: NSHostingController(rootView: SettingsView(model: model)))
-            window.title = String(localized: "Currency Notch Settings")
+            window.title = String(localized: "CurrenSee Settings")
             window.styleMask = [.titled, .closable, .miniaturizable]
             window.isReleasedWhenClosed = false
             window.center()

@@ -10,7 +10,7 @@ public final class URLSessionHTTPClient: HTTPClient {
     private let userAgent: String
 
     public init(allowlist: RateHostAllowlist = .standard,
-                userAgent: String = "CurrencyNotch/\(CurrencyCore.version)") {
+                userAgent: String = "CurrenSee/\(CurrencyCore.version)") {
         self.allowlist = allowlist
         self.userAgent = userAgent
         let config = URLSessionConfiguration.ephemeral

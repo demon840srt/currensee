@@ -11,7 +11,7 @@ struct AlertsTab: View {
             if model.notificationStatus == .denied {
                 HStack {
                     Image(systemName: "bell.slash").foregroundStyle(.orange)
-                    Text("Notifications are turned off for Currency Notch, so alerts can't notify you.")
+                    Text("Notifications are turned off for CurrenSee, so alerts can't notify you.")
                         .font(.callout)
                     Spacer()
                     Button("Open Notification Settings") { Notifier.openSystemSettings() }

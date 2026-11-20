@@ -168,3 +168,4 @@ None — every feature is core (owner decision, 2026-11-20).
 | 26 | 2026-11-21 | Alerts: strict crossing, fresh data only, start disarmed if already past, inactive (kept) on base/list change | 0021 |
 | 27 | 2026-11-21 | Hebrew stays default; language override via per-app AppleLanguages + restart; RTL mirroring with LTR isolates | 0022 |
 | 28 | 2026-11-21 | Personal use only: no Developer ID/notarization; release.sh installs a sandboxed, Hardened Runtime build to /Applications (supersedes #8) | 0023 |
+| 29 | 2026-11-21 | App named CurrenSee (display, product, strings, DMG); bundle ID and data folder unchanged | 0024 |

@@ -4,7 +4,7 @@ set -euo pipefail
 source "$(dirname "$0")/lib.sh"
 
 ensure_project
-log "Building CurrencyNotch (Debug)"
+log "Building CurrenSee (Debug)"
 xcodebuild build \
     -project "$PROJECT" \
     -scheme "$SCHEME" \
@@ -13,6 +13,6 @@ xcodebuild build \
     -derivedDataPath "$BUILD_DIR/DerivedData" \
     -quiet
 
-APP_PATH="$BUILD_DIR/DerivedData/Build/Products/Debug/CurrencyNotch.app"
+APP_PATH="$BUILD_DIR/DerivedData/Build/Products/Debug/CurrenSee.app"
 [[ -d "$APP_PATH" ]] || die "Build finished but $APP_PATH is missing."
 echo "    $APP_PATH"

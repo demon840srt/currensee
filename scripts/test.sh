@@ -7,7 +7,7 @@ log "CurrencyCore: swift test"
 (cd "$CORE_DIR" && swift test)
 
 ensure_project
-log "CurrencyNotch: xcodebuild test"
+log "CurrenSee app: xcodebuild test"
 xcodebuild test \
     -project "$PROJECT" \
     -scheme "$SCHEME" \

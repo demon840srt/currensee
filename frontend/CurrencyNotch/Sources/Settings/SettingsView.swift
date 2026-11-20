@@ -235,7 +235,7 @@ private struct GeneralTab: View {
             }
             if model.needsRestartForLanguage {
                 HStack {
-                    Text("Restart Currency Notch to switch language.").font(.callout)
+                    Text("Restart CurrenSee to switch language.").font(.callout)
                     Spacer()
                     Button("Restart Now") { LanguageOverride.relaunch() }
                 }
@@ -246,7 +246,7 @@ private struct GeneralTab: View {
                     .disabled(!model.loginItemState.isAvailable)
                 if model.loginItemState.needsApproval {
                     HStack {
-                        Text("macOS needs your approval to open Currency Notch at login.")
+                        Text("macOS needs your approval to open CurrenSee at login.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Spacer()
